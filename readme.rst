@@ -75,5 +75,5 @@ Unfortunatly Pygeek still is not compatible with python 3.5 so, once you have yo
 
     > ShowClocStats.py
     
-.. image:: doc/source/img/loc_stats.svg
+.. image:: doc/source/img/loc_stats.png
 
