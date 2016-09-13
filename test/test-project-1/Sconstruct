@@ -1,0 +1,5 @@
+import broker_scons
+
+build_environment = broker_scons.establish_contact(Environment())
+#build_environment.store(source='meta')
+build_environment.bring(source='meta')

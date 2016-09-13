@@ -1,0 +1,16 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "python.unitTest.nosetestsEnabled": true,
+    "python.unitTest.outputWindow": "Extensions",
+
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.vscode": true,
+        "**/.vs": true,
+        "**/.DS_Store": true,
+        "**/__pycache__" : true,
+        "**/*.pyc" : true
+    }
+}
+

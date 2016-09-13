@@ -1,0 +1,12 @@
+digraph {
+    node [shape=box color=blue penwidth=3]
+    edge [color=gray penwidth=2 ];
+    
+    VCS -> Sandbox;
+    portfolio -> Broker -> Sandbox -> VCS;
+    Broker -> portfolio;
+    
+    VCS -> "Build engine";
+    Broker -> "Build engine";
+    "Build engine" ->Broker;
+}

@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{c170b7ca-4fc8-479c-85ef-a765beb74db4}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>test\test_recursive_dependency_detection.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>{9a7a9026-48c1-4688-9d5d-e5699d47d074}</InterpreterId>
+    <InterpreterVersion>3.5</InterpreterVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="box\one.txt" />
+    <Content Include="box\subfolder\three.txt" />
+    <Content Include="box\two.txt" />
+    <Content Include="doc\source\img-source\build_environment.dot.svg" />
+    <Content Include="doc\source\img-source\icon.png" />
+    <Content Include="doc\source\img\box_definition.svg" />
+    <Content Include="doc\source\img\broker-in-action.svg" />
+    <Content Include="doc\source\img\loc_stats.svg" />
+    <Content Include="doc\source\img\packaging-op.svg" />
+    <Content Include="loc_stats.svg" />
+    <Content Include="test\results-data\four.txt" />
+    <Content Include="test\results-data\one.txt" />
+    <Content Include="test\results-data\subfolder\three.txt" />
+    <Content Include="test\results-data\two.txt" />
+    <Content Include="test\test-project-1\one.txt" />
+    <Content Include="test\test-project-1\remote_results\one.txt" />
+    <Content Include="test\test-project-1\remote_results\subfolder\three.txt" />
+    <Content Include="test\test-project-1\remote_results\two.txt" />
+    <Content Include="test\test-project-1\subfolder\three.txt" />
+    <Content Include="test\test-project-1\two.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="broker.py" />
+    <Compile Include="broker_scons.py" />
+    <Compile Include="dependencies.py" />
+    <Compile Include="doc\source\conf.py" />
+    <Compile Include="portfolio.py" />
+    <Compile Include="setup.py" />
+    <Compile Include="test\test_compand.py" />
+    <Compile Include="test\test_mongo_interaction.py" />
+    <Compile Include="test\test_recursive_dependency_detection.py" />
+    <Compile Include="test\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="box" />
+    <Folder Include="box\subfolder" />
+    <Folder Include="doc\" />
+    <Folder Include="doc\source" />
+    <Folder Include="doc\source\img" />
+    <Folder Include="doc\source\img-source" />
+    <Folder Include="test" />
+    <Folder Include="test\results-data" />
+    <Folder Include="test\results-data\subfolder" />
+    <Folder Include="test\test-project-1" />
+    <Folder Include="test\test-project-1\remote_results" />
+    <Folder Include="test\test-project-1\remote_results\subfolder" />
+    <Folder Include="test\test-project-1\subfolder" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="{9a7a9026-48c1-4688-9d5d-e5699d47d074}\3.5" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>

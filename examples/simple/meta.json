@@ -1,0 +1,18 @@
+{
+	"NAME" : "Simple",
+	"VERSION" : "0.0.1",
+ 	"DEPENDENCIES" : [],
+	"__BOX_INSTRUCTIONS__" : [
+		{
+			"FROM" : "src/headers",
+			"TO"   : "include",
+			"FILTER": "*"
+		},
+		
+		{
+			"FROM" 		: "out", 
+			"TO" 		: "output", 
+			"FILTER" 	: "*"
+		}
+	]
+}

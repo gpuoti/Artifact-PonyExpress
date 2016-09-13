@@ -1,0 +1,54 @@
+{
+	"NAME" : "Complex",
+	"VERSION" : "0.1.0",
+ 	"DEPENDENCIES" : [
+		{
+			"NAME" : "Simple",
+			"VERSION" : "0.0.1"
+		}
+	],
+	"__BOX_INSTRUCTIONS__" : [
+		{
+			"FROM" : "src/headers",
+			"TO"   : "include",
+			"FILTER": "*"
+		},
+		
+		{
+			"FROM" : "out",
+			"TO"   : "output",
+			"FILTER": "*"
+		},
+
+		{
+			"FROM" : "lib",
+			"TO"   : "lib",
+			"FILTER": "*"
+		}
+		
+	],
+
+	"__UNBOX_INSTRUCTIONS__" : [
+		{
+			"FROM" : "include",
+			"TO"   : "include-ext",
+			"FILTER": "*"
+		},
+		
+		{
+			"FROM" : "output",
+			"TO"   : "output",
+			"FILTER": "*"
+		},
+
+		{
+			"FROM" : "lib",
+			"TO"   : "lib",
+			"FILTER": "*"
+		}
+		
+	]
+
+
+	
+}

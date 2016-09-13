@@ -1,0 +1,14 @@
+digraph {
+    edge [splines="polyline"]
+    node [shape="box"]
+
+    subgraph "cluster_File-Block-Ref" {
+        folder [color=green];
+        filter [color=green];
+       
+    } -> "file-block-ref" -> "package-instruction";
+   
+    "destination-folder" -> "package-instruction" -> "Broker-packager" -> Box;
+    "destination-folder" [color = green]
+    "Broker-packager" [shape="circle" color=orange]
+}

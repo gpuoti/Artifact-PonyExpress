@@ -1,0 +1,193 @@
+===============
+Artifact Broker
+===============
+
+Artifact Broker or simply Broker, is an artifact repository and package manager that aims to simplify software modules integration into big projects.
+It is designed with native (read modern C++) development in mind but it is usefull everywhere there is an environment to build in order to transform versioned data using any software. 
+
+.. note:: As broker works well with binary components, the transformation function (the tool used to transform data) itself may be a versioned input component.
+
+Broker use MongoDB to store your packages and meta-informations. The Broker's MongoDB database is the **broker_store** and the only collection it uses as a repository is named **packages**.
+
+You'll need a running local or remote MongoDB database in order to use Broker. 
+
+Broker can perform two main operation from command line:
+  
+  - **store** an artifact on behalf of the author
+  - **bring** dependencies of the working artifact to users
+  
+For a quick taste see: :ref:`quick_start_guide`
+
+--------
+Use-case
+--------
+
+In a tipical application what you are going to be is integrade a bounce of existing modules that your organization has in the codebase, and write some more code to implement more functionality on top.
+Sometime this is a long and error prone process. And it is boring!
+You have to get:
+
+  * static libraries (and the related header files)
+    
+    * be sure they are compiled using compatible options against the one you are going to use in your projects. Some example are:
+    
+      * structure allignment
+      * character dimensions (aka char vs wchar)
+      * target platform
+      * compiler version 
+      * ... anything relevant in your working environment
+            
+  * header files for header only libraries
+  * any dinamic link library you will need to run or test your executable
+  * copy all those files in the right place in your project folder structure
+  
+And this operations may be performed multiple times if you really need to be sure what version of your component are using. I mean you really want to be sure the correct package is there at the moment your build engine is going to use it. Ideally, you should be able to create a sandbox environment directly from archived modules in order to avoid unreplicable bugs. This can help maintain a clean working environment which can be reproduced from green field each time.
+
+Package attributes
+------------------
+
+Broker act as a package manager and only as a package manager. It will not force you to leave your favourite build engine and, even if I'll focus on SCons, it will try to be as friendly as possible with any of them. 
+Once developer has a stable version to release, it will ask the build engine to build and deliver a particular version of his artifact. The relevant attributes definition is completly up to the developer/user and described into a meta-informations file that can be stored alongside the sources. Additional meta-informations can be inserted by the build engine to describe build relevant informations such as structure allignment or target machine. 
+The name used by broker to refers to the artifact packed with the related metadata is **box**. So broker deliver boxes to the repository and retrieve boxes from the repository as they are required.
+
+A minimal meta-informations file can be something like:
+
+.. code-block:: json
+
+  {
+    "NAME"          : "TheProjectName",
+    "Version"       : "2.1.7"
+  }
+
+During the build process, depending on particular build parameters the meta-informations may become:
+
+.. code-block:: json
+  
+  {
+    "NAME"          : "TheProjectName",
+    "Version"       : "2.1.7",
+    "StructAllign"  : 1,
+    "TARGET"        : "x86"
+  }
+
+To let the user be free to have a sandbox different from the final package structure, broker define a reserved attribute that will not be stored in the database called **__BOX_INSTRUCTIONS__**.
+It is a list of packaging instructions, that is, a list of json objects that specify:
+  
+  * a source path using the attribute **FROM**
+  * a destination path based on package root using the attribute **TO**
+  * a file filter using the attribute **FILTER**
+  
+Given a list of packaging instructions, Broker will prepare the artifact content as a tarball stored as an attribute of the mongo document.
+
+.. code-block:: json
+
+  {
+    "NAME"          : "TheProjectName",
+    "Version"       : "2.1.7",
+    "StructAllign"  : 1,
+    "TARGET"        : "x86"
+
+    "__BOX_INSTRUCTIONS__"  : [ 
+                                {
+                                  "FROM"    : "test/temp-data",
+                                  "TO"      : "test-data",
+                                  "FILTER"  : "*.txt",
+                                },
+                                
+                                {
+                                  "FROM"    : "test/temp-data/subfolder/subsubfolder",
+                                  "TO"      : "moved-folder",
+                                  "FILTER"  : "*.txt",
+                                }
+                              ]
+  }
+
+
+Specify dependencies
+--------------------
+
+Broker defines a component's special attribute named **DEPENDENCIES** which list any dependencies the component may have. This attribute may or may not be present, if it is not, Broker interpret the missing attribute as absence of dependencies to retrive. 
+Every dependency listed in the **DEPENDENCIES** attribute, is a meta-information object that describes the properties of the component to match to satisfy the component requirement.
+
+To let the user organize his project independelly from the way its dependencies packages are organized, Broker defines a special metadata named **__UNBOX_INSTRUCTIONS__** that describes the policy to use while extracting data from dependency packages. It is shared by all dependencies as packages should share a quite common organization. **__UNBOX_INSTRUCTIONS__** looks the same as **__BOX_INSTRUCTIONS__** and Broker don't store them on the database just like it do for **__BOX_INSTRUCTIONS__**.
+
+.. code-block:: json
+
+   {
+    "NAME"          : "TheProjectName",
+    "MajorVersion"  : "2.1.7",
+    "StructAllign"  : 1,
+    "TARGET"        : "x86"
+    
+    "DEPENDENCIES"  : [
+                        { 
+                          "NAME"     : "FirstComponentName"
+                          "Version"  : "1.2.0"
+                          "TARGET"   : "x86"
+                        },
+                        { 
+                          "NAME"     : "SecondComponentName"
+                          "Version"  : { "$gte" : 1.0.0" }
+                          "TARGET"   : "x86"
+                        }
+                      ]
+                      
+    "__UNBOX_INSTRUCTIONS__" : [
+                                  {
+                                    "FROM"    : "test-data",
+                                    "TO"      : "test/results-data",
+                                    "FILTER"  : "*.txt"
+                                  },
+                              
+                                  {
+                                    "FROM"    : "moved-folder",
+                                    "TO"      : "test/results-data",
+                                    "FILTER"  : "*.txt" 
+                                  }
+                               ]
+  }
+  
+Broker allow user to specify (and require) any attribute, and some of those can also be appended during the build process (i.e. the TARGET may depende from a build parameter).
+Attributes to describe required components may be specifies using special functions (the ones available to query mongoDB). In the example above, the required version of *SecondComponentName* is any of the ones with version 1.0.0 or above available in the portfolio. 
+
+Command line
+------------
+
+It is quite simple to use Broker from command line. To store your results just write:
+
+.. code-block:: bash
+
+  broker --meta "meta-informations.json" store
+  
+While to retrieve dependencies, before you start build your project write:
+
+.. code-block:: bash
+
+  broker --meta "meta-informations.json" bring
+  
+for an even simpler interface, use the standard name for the meta-informations file: **meta.json**. In this case you can just omit the --meta option.
+More command line options are available to let the user specify MongoDB connection property. Here is the complete list:
+
+    --meta    <meta-informations file>
+    --mongo   <mongo-host> default localhost
+    --port    <mongodb-port> default 27017
+    --user    <mongodb user name> 
+    --pwd     <mongodb user password>
+ 
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+   
+   quick-start
+   python-interface
+   scons-interaction
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
