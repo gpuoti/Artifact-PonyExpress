@@ -224,7 +224,6 @@ cloc_xml_out.xml
 **/*.pyd 
 src/tests/minimal/minimal_vs2015/Output/*.lib
 src/tests/minimal/minimal_vs2015/Output/*.exp
-loc_stats.svg 
 *.bsc
 
 # html generated documentation
