@@ -244,6 +244,7 @@ if __name__ == '__main__':
     start_time = time.time()
     
     arguments = cli.parser.parse_args(sys.argv[1:])
+    print(dir(arguments))
     arguments.func(arguments)
     
     end_time = time.time()

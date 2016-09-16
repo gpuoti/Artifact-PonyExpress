@@ -74,7 +74,7 @@ parser.add_argument('--user', default='')
 parser.add_argument('--pwd', default='')
 
 store_command_parser = subparsers.add_parser('store')
-store_command_parser.set_defaults(func=store)
+store_command_parser.set_defaults(func=store, dest='func')
 
 bring_command_parser = subparsers.add_parser('bring')
 bring_command_parser.set_defaults(func=bring)
