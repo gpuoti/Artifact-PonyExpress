@@ -1,13 +1,13 @@
-======================
-pony package manager
-======================
+====================
+Artifact PonyExpress
+====================
 
 The pony helps you trade software or data modules!
 
 Install
 -------
 
-pony is a python powered program, it can be installed using pip.
+Pony is a python powered program, it can be installed using pip.
 Once you have the distrubution package as a tarball or zipfile, simply run:
 
 .. code-block:: bash
