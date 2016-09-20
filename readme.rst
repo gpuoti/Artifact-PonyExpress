@@ -1,18 +1,18 @@
 ======================
-Broker package manager
+pony package manager
 ======================
 
-The broker helps you trade software or data modules!
+The pony helps you trade software or data modules!
 
 Install
 -------
 
-Broker is a python powered program, it can be installed using pip.
+pony is a python powered program, it can be installed using pip.
 Once you have the distrubution package as a tarball or zipfile, simply run:
 
 .. code-block:: bash
     
-    > pip install broker-0.1.0.tar.gz
+    > pip install pony-0.1.0.tar.gz
     
 
 pip package build instructions
@@ -40,14 +40,14 @@ If you (this is also a reminder for myself) are interested in making changes to 
 documentation
 -------------
 
-Broker is documented using **restructuredText** and **sphinx**. Documentation source files are in doc/source folder. To build the documentation run the following command after cd to the project's documentation root folder.
+pony is documented using **restructuredText** and **sphinx**. Documentation source files are in doc/source folder. To build the documentation run the following command after cd to the project's documentation root folder.
 
 .. code-block:: bash
 
     > make  html
     
 
-The output will be accessible from  doc/user-doc/html/broker.html. Of course you can build documentation using any format supported by sphinx.
+The output will be accessible from  doc/user-doc/html/pony.html. Of course you can build documentation using any format supported by sphinx.
 
 
 Project statisticts

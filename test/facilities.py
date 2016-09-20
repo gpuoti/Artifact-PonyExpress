@@ -26,9 +26,9 @@ def subfolders_in(folder='.'):
 
 class MongoChecker:
     def __init__(self, host='localhost', port=27017):
-        # establish mongo connection and retrieve the broker_store collection
+        # establish mongo connection and retrieve the pony_store collection
         self.connection = pymongo.MongoClient(host, port)
-        self.collection = self.connection.broker_store.packages
+        self.collection = self.connection.pony_store.packages
 
 
     def __enter__(self):
@@ -60,9 +60,9 @@ class WorkingDirectorySet:
         return self.requested_folder
 
 def mongo_clean(host='localhost', port=27017):
-    # establish mongo connection and retrieve the broker_store collection
+    # establish mongo connection and retrieve the charge_store collection
     connection = pymongo.MongoClient(host, port)
-    collection = connection.broker_store.packages
+    collection = connection.pony_store.packages
 
     collection.delete_many({"TEST": ""})
     connection.close()

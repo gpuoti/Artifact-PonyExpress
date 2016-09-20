@@ -4,7 +4,7 @@
 Quick start guide
 =================
 
-Let have a taste of what the benefits of using **Broker** are with a very quick tour.
+Let have a taste of what the benefits of using **pony** are with a very quick tour.
 Suppose you are going to start a new project and that, over years, your company has developed a bounce of little software components that easy your life so much once they are in place. If they are small, they possibly also are many.
 
 Suppose you are going to develop a microservice that will comunicate by means of json strings exchanged over a proprietary protocol. Of course your company have his own libraries to deal with theese basic tasks:
@@ -27,7 +27,7 @@ Suppose you are going to develop a microservice that will comunicate by means of
 |                       |                   | better_strings/string.hpp|
 +-----------------------+-------------------+--------------------------+
                                         
-Now, if your company use a binary repository to store those artifacts, and use **Broker** in particular, instead of prepare your environment by hand, you can prepare a meta information file like the following one:
+Now, if your company use a binary repository to store those artifacts, and use **pony** in particular, instead of prepare your environment by hand, you can prepare a meta information file like the following one:
 
 .. code-block:: json
 
@@ -76,26 +76,26 @@ Now, if your company use a binary repository to store those artifacts, and use *
   
 In this example, I'm supposing that the box format in use has:
     
-    * library files (.lib) in the boxes are placed into a first level folder named lib 
+    * library files (.lib) placed into a first level folder named lib of the boxes 
     * header files into are placed into the box fist folder named include.
     * and that files into the boxes are organized to not collide with names of objects from other boxes (I mean boxes containing different components)
     
- If you have followed a well defined box format, you will simply have a standard structured once **Broker** has resolved dependencies for you. To do this just run broker with:
+ If you have followed a well defined box format and once **pony** has resolved dependencies, you will easyly have a standard project structure. To do this just run pony with:
 
 .. code-block:: bash
 
-  broker bring
+  pony deliver
 
 or, in a more complex environment with a properly hosted mongodb cluster: 
 
-  broker --mongo mongo_host_name --port 1234 --user your_name --pwd your_pwd bring
+  pony --mongo mongo_host_name --port 1234 --user your_name --pwd your_pwd deliver
 
 
  
  Prepare to deliver
  ------------------
  
- Now, expecially if your FantasticProject is actually a midleware library, you will probably want to store its releases using the same **Broker**. To let the **Broker** accept your delivery, you must provide boxing instructions into your metadata object witch may become:
+ Now, expecially if your FantasticProject is actually a midleware library, you will probably want to charge the pony to manage your resulting artifacts. To let the **pony** accept them, you must provide boxing instructions into your metadata object witch may become:
  
  .. code-block:: json
  
@@ -157,20 +157,20 @@ or, in a more complex environment with a properly hosted mongodb cluster:
   
   }
   
-Once your project is ready for delivery, as a manual step running a command line command or, even (much) better, as a final step of your build process ask **broker** to store your results with:
+Once your project is ready for delivery, as a manual step running a command line command or, even (much) better, as a final step of your build process, charge the **pony** to manage your artifacts with:
 
 .. code-block:: bash
 
-  broker --mongo mongo_host_name --port 1234 --user your_name --pwd your_pwd store
+  pony --mongo mongo_host_name --port 1234 --user your_name --pwd your_pwd charge
 
 or, if your environment is very simple with mongo daemon running on localhost:
 
 .. code-block:: bat
 
-  broker store
+  pony charge
 
 .. note:: 
 
-  Remember that if you have access to the python interpreter from the build script, you can even use the full power of the broker's python interface.
+  Remember that if you have access to the python interpreter from the build script, you can even use the full power of the pony's python interface.
 
-That's it, hope you found this simple enough. I think writing this metainformation still is quite boring but this save you from doing it by hand witch seams a simpler operation as you don't need to request operations in formal language but indeed is a quite long and also much more error prone operation. Moreover here you are doing much more then prepare your sandbox, you are also declaring dependencies for the new project witch may become quite useful when time passes and the number of version of involved components increase.
+That's it, hope you found this simple enough. I think writing this metainformation still is quite boring but this save you from doing it by hand witch, as you don't need to request operations in formal language, seams a very simple operation while, indeed, it is a quite long and also much more error prone operation. Moreover here you are doing much more then prepare your sandbox, you are also declaring dependencies for the new project witch may become quite useful when time passes and the number of version of involved components increase.

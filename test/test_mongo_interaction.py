@@ -6,7 +6,7 @@ import os
 
 
 import pymongo
-import broker
+import pony
 from portfolio import to_dot_string
 
 
@@ -48,7 +48,7 @@ class TestMongoStoreOp(unittest.TestCase):
         erase_temp_files()
 
         connection = pymongo.MongoClient('localhost', 27017)
-        db = connection.broker_store
+        db = connection.pony_store
         collection = db.packages
 
         collection.delete_many({"name" : "temp"})
@@ -59,18 +59,18 @@ class TestMongoStoreOp(unittest.TestCase):
         Checks both 'raw' package data and related metadata are correctly stored in mongo db.
         This also checks you cannot store multiple time projects with same metadata.
         """
-        # establish mongo connection and retrieve the broker_store collection
+        # establish mongo connection and retrieve the pony_store collection
         connection = pymongo.MongoClient('localhost', 27017)
-        collection = connection.broker_store.packages
+        collection = connection.pony_store.packages
 
         # prepare some packaging instructions and metadata
         instructions = [
-            broker.pack(
+            pony.pack(
                 'test/temp-data',
                 'test-data',
                 '*.txt'
             ),
-            broker.pack(
+            pony.pack(
                 'test/temp-data/subfolder/subsubfolder',
                 'moved-folder',
                 '*.txt'
@@ -81,15 +81,15 @@ class TestMongoStoreOp(unittest.TestCase):
 
         # clean the collection from any document with same (test) metadata
         collection.delete_many(some_metadata)
-        broker.store(instructions, some_metadata)
+        pony.charge(instructions, some_metadata)
 
         # checks mongo has a correspondant document stored!
         package = collection.find({"name" : "temp", "version" : "0.1.3", "target" : "x86"})
         self.assertTrue(package[0]['package'])
 
         # and that it prevent you from store multiple artifact with same metadata!
-        with self.assertRaises(broker.portfolio.YetInPortfolio):
-            broker.store(instructions, some_metadata)
+        with self.assertRaises(pony.portfolio.YetInPortfolio):
+            pony.charge(instructions, some_metadata)
 
     def test_save_package_and_complex_metadata(self):
         """
@@ -98,18 +98,18 @@ class TestMongoStoreOp(unittest.TestCase):
         This also checks you cannot store multiple time projects with same metadata but different
         dependencies.
         """
-        # establish mongo connection and retrieve the broker_store collection
+        # establish mongo connection and retrieve the pony_store collection
         connection = pymongo.MongoClient('localhost', 27017)
-        collection = connection.broker_store.packages
+        collection = connection.pony_store.packages
 
         # prepare some packaging instructions and metadata
         instructions = [
-            broker.pack(
+            pony.pack(
                 'test/temp-data',
                 'test-data',
                 '*.txt'
             ),
-            broker.pack(
+            pony.pack(
                 'test/temp-data/subfolder/subsubfolder',
                 'moved-folder',
                 '*.txt'
@@ -130,26 +130,26 @@ class TestMongoStoreOp(unittest.TestCase):
 
         # clean the collection from any document with same (test) metadata
         collection.delete_many(some_metadata)
-        broker.store(instructions, some_metadata)
+        pony.charge(instructions, some_metadata)
 
         # checks mongo has a correspondant document stored!
         package = collection.find({"name" : "temp", "version" : "0.1.4", "target" : "x86"})
         self.assertTrue(package[0]['package'])
 
         # and that it prevent you from store multiple artifact with same metadata!
-        with self.assertRaises(broker.portfolio.YetInPortfolio):
-            broker.store(instructions, some_metadata)
+        with self.assertRaises(pony.portfolio.YetInPortfolio):
+            pony.charge(instructions, some_metadata)
 
     def test_insert_based_on_json(self):
         """
-        Checks broker store a box completelly described by mean of json string and by
+        Checks pony charge a box completelly described by mean of json string and by
         boxing instructions referring to files on the filesyste.
         """
-        # establish mongo connection and retrieve the broker_store collection
+        # establish mongo connection and retrieve the pony_store collection
         connection = pymongo.MongoClient('localhost', 27017)
-        collection = connection.broker_store.packages
+        collection = connection.pony_store.packages
 
-        broker.store(json="""
+        pony.charge(json="""
         {
             "name"    : "temp", 
             "version" : "0.1.3", 
@@ -176,12 +176,12 @@ class TestMongoStoreOp(unittest.TestCase):
 
     def test_insert_based_on_json_file(self):
         """
-        Checks broker store a box completelly described by mean of json file and by
+        Checks pony charge a box completelly described by mean of json file and by
         boxing instructions referring to files on the filesystem.
         """
-        # establish mongo connection and retrieve the broker_store collection
+        # establish mongo connection and retrieve the pony_store collection
         connection = pymongo.MongoClient('localhost', 27017)
-        collection = connection.broker_store.packages
+        collection = connection.pony_store.packages
 
         json_content = """
         {
@@ -206,21 +206,21 @@ class TestMongoStoreOp(unittest.TestCase):
         with open("temp.json", "w") as out_file:
             out_file.write(json_content)
 
-        broker.store(file="temp.json")
+        pony.charge(file="temp.json")
         # checks mongo has a correspondant document stored!
         package = collection.find({"name" : "temp", "version" : "0.1.3", "target" : "x86"})
         self.assertTrue(package[0]['package'])
 
 class TestMongoMetarequestQuery(unittest.TestCase):
     def setUp(self):
-        broker.silent = True
+        pony.silent = True
         touch_some_files()
         self.connection = pymongo.MongoClient('localhost', 27017)
-        self.collection = self.connection.broker_store.packages
+        self.collection = self.connection.pony_store.packages
 
         instructions = [
-            broker.pack('test/temp-data', 'test-data', '*.txt'),
-            broker.pack('test/temp-data/subfolder/subsubfolder', 'moved-folder', '*.txt')
+            pony.pack('test/temp-data', 'test-data', '*.txt'),
+            pony.pack('test/temp-data/subfolder/subsubfolder', 'moved-folder', '*.txt')
         ]
 
         self.collection.delete_many(
@@ -232,23 +232,23 @@ class TestMongoMetarequestQuery(unittest.TestCase):
 
         meta = {"NAME" : "dep-v1",
                 "VERSION" : "1.0.0"}
-        broker.store(instructions, meta)
+        pony.charge(instructions, meta)
 
         meta = {"NAME" : "dep-v1",
                 "VERSION" : "0.1.0"}
-        broker.store(instructions, meta)
+        pony.charge(instructions, meta)
 
         meta = {"NAME" : "prj61",
                 "VERSION" : "1.3.0"}
 
-        broker.store(instructions, meta)
+        pony.charge(instructions, meta)
 
         meta = {"NAME" : "dep-v1",
                 "VERSION" : "1.1.0"}
-        broker.store(instructions, meta)
+        pony.charge(instructions, meta)
 
     def tearDown(self):
-        broker.silent = True
+        pony.silent = True
         erase_temp_files()
         #also erase files created as results
         try:
@@ -263,19 +263,19 @@ class TestMongoMetarequestQuery(unittest.TestCase):
         )
         self.connection.close()
 
-    def test_bring_op_version_exact(self):
+    def test_deliver_op_version_exact(self):
         """
         Test a ssuccess case, it must successfully
         unbox a stored package with request metadata
         """
 
         instructions = [
-            broker.unpack('test-data', 'test/results-data'),
-            broker.unpack('moved-folder', 'test/results-data')
+            pony.unpack('test-data', 'test/results-data'),
+            pony.unpack('moved-folder', 'test/results-data')
         ]
 
         meta_request = {"NAME" : "dep-v1", "VERSION" :  "1.0.0"}
-        broker.bring(instructions, meta_request)
+        pony.deliver(instructions, meta_request)
 
         self.assertTrue(
             os.path.exists('test/results-data/one.txt')
@@ -287,18 +287,18 @@ class TestMongoMetarequestQuery(unittest.TestCase):
             os.path.exists('test/results-data/subfolder/three.txt')
         )
 
-    def test_bring_op_return_created_files(self):
+    def test_deliver_op_return_created_files(self):
         """
         Test a ssuccess case, it must successfully unbox a stored package
         with request metadata
         """
 
         instructions = [
-            broker.unpack('test-data', 'test/results-data'),
-            broker.unpack('moved-folder', 'test/results-data')
+            pony.unpack('test-data', 'test/results-data'),
+            pony.unpack('moved-folder', 'test/results-data')
         ]
         meta_request = {"NAME" : "prj61", "VERSION" :  "1.3.0"}
-        created_files, dep_graph = broker.bring(instructions, meta_request)
+        created_files, dep_graph = pony.deliver(instructions, meta_request)
 
         for fname in ['test/results-data/one.txt', 'test/results-data/two.txt', 'test/results-data/subfolder/three.txt']:
             self.assertTrue(
@@ -306,19 +306,19 @@ class TestMongoMetarequestQuery(unittest.TestCase):
                 msg = str(fname) + ' not in '+ str(created_files) + '\nDependency graph is\n' + to_dot_string(dep_graph)
             )
 
-    def test_bring_op_version_greater(self):
+    def test_deliver_op_version_greater(self):
         """
         Test a success case, it must successfully unbox a stored package
         with request metadata (version greater then)
         """
 
         instructions = [
-            broker.unpack('test-data', 'test/results-data'),
-            broker.unpack('moved-folder', 'test/results-data')
+            pony.unpack('test-data', 'test/results-data'),
+            pony.unpack('moved-folder', 'test/results-data')
         ]
 
         meta_request = {"NAME" : "dep-v1", "VERSION" : {"$gte" : "0.9.0"}}
-        broker.bring(instructions, meta_request)
+        pony.deliver(instructions, meta_request)
 
         self.assertTrue(
             os.path.exists('test/results-data/one.txt')
@@ -330,24 +330,24 @@ class TestMongoMetarequestQuery(unittest.TestCase):
             os.path.exists('test/results-data/subfolder/three.txt')
         )
 
-    def test_bring_op_fail_version_exact(self):
+    def test_deliver_op_fail_version_exact(self):
         """
         Test a fail case, it must raise NotInPortfolio exception because
         there isn't a stored package with request metadata
         """
 
         instructions = [
-            broker.unpack('test-data', 'test/results-data'),
-            broker.unpack('moved-folder', 'test/results-data')
+            pony.unpack('test-data', 'test/results-data'),
+            pony.unpack('moved-folder', 'test/results-data')
         ]
 
         meta_request = {"NAME" : "dep-v1", "VERSION" :  "1.0.1"}
-        with self.assertRaises(broker.portfolio.NotInPortfolio):
-            broker.bring(instructions, meta_request)
+        with self.assertRaises(pony.portfolio.NotInPortfolio):
+            pony.deliver(instructions, meta_request)
 
-    def test_bring_op_version_greater_from_json(self):
+    def test_deliver_op_version_greater_from_json(self):
         """
-        Checks broker can bring boxes based on json a requirement
+        Checks pony can deliver boxes based on json a requirement
         description (actually just a single requirement description)
         and the instructions for the unboxing.
         In this case the requireiment description is complex, it is like: version greater then...
@@ -360,18 +360,18 @@ class TestMongoMetarequestQuery(unittest.TestCase):
         meta_request = json.loads(json_string)
 
         instructions = [
-            broker.unpack('test-data', 'test/results-data'),
-            broker.unpack('moved-folder', 'test/results-data')
+            pony.unpack('test-data', 'test/results-data'),
+            pony.unpack('moved-folder', 'test/results-data')
         ]
 
-        requirements, gr = broker.bring(instructions, meta_request[0])
+        requirements, gr = pony.deliver(instructions, meta_request[0])
         instructions = [
-            broker.pack(
+            pony.pack(
                 'test/temp-data',
                 'test-data',
                 '*.txt'
             ),
-            broker.pack(
+            pony.pack(
                 'test/temp-data/subfolder/subsubfolder',
                 'moved-folder',
                 '*.txt'
@@ -387,7 +387,7 @@ class TestMongoMetarequestQuery(unittest.TestCase):
             os.path.exists('test/results-data/subfolder/three.txt')
         )
 
-        # checks the log from the bring operation. This will check the all compatible versions of dependencies are taken into account
+        # checks the log from the deliver operation. This will check the all compatible versions of dependencies are taken into account
         # and that only one is seleceted to resolve dependency. 
 
         self.assertEqual("""digraph {
@@ -398,9 +398,9 @@ class TestMongoMetarequestQuery(unittest.TestCase):
 """ , to_dot_string(gr), msg=to_dot_string(gr))
 
 
-    def test_bring_op_version_greater_from_simple_and_complete(self):
+    def test_deliver_op_version_greater_from_simple_and_complete(self):
         """
-        Checks broker can bring boxes based on json description of project metadata:
+        Checks pony can deliver boxes based on json description of project metadata:
             - metadata strictly concerning the project
             - dependency metadata
             - unbox instructions
@@ -432,7 +432,7 @@ class TestMongoMetarequestQuery(unittest.TestCase):
 
         }"""
 
-        broker.bring_json(json_string)
+        pony.deliver_json(json_string)
 
         self.assertTrue(
             os.path.exists('test/results-data/one.txt')
@@ -444,16 +444,16 @@ class TestMongoMetarequestQuery(unittest.TestCase):
             os.path.exists('test/results-data/subfolder/three.txt')
         )
 
-    def test_bring_op_multiple_dependencies(self):
+    def test_deliver_op_multiple_dependencies(self):
         """
         Checks can retrieve multiple dependencies using only one set of unpack instructions.
 
-        Checks broker can bring boxes based on json description of project dependencies metadata:
+        Checks pony can deliver boxes based on json description of project dependencies metadata:
             - dependency metadata
             - unbox instructions
 
         In this case the requreiment description is complex, it is like: version greater then...
-        In this case there are multiple acceptable dependency project version. Broker shall
+        In this case there are multiple acceptable dependency project version. Pony shall
         chose any of those and success.
 
         Checks also that the requirement graph constructed from json dependency description, is the same as the one contructed
@@ -479,13 +479,13 @@ class TestMongoMetarequestQuery(unittest.TestCase):
         meta_request_raw = [{"NAME" : "dep-v1", "VERSION" : {"$gte" : "0.9.0"}}, {"NAME" : "prj61", "VERSION" : "1.3.0"}] 
 
         instructions = [
-            broker.unpack('test-data', 'test/results-data'),
-            broker.unpack('moved-folder', 'test/results-data')
+            pony.unpack('test-data', 'test/results-data'),
+            pony.unpack('moved-folder', 'test/results-data')
         ]
 
-        # ask broker to bring dependencies as described from the requirements constructed from json and from raw python object.
-        files, gr = broker.bring(instructions, meta_request)
-        files_raw, gr_raw = broker.bring(instructions, meta_request_raw)
+        # ask pony to deliver dependencies as described from the requirements constructed from json and from raw python object.
+        files, gr = pony.deliver(instructions, meta_request)
+        files_raw, gr_raw = pony.deliver(instructions, meta_request_raw)
 
         fail_message = "The requirement graph constructed from json string is:\n" + to_dot_string(gr) + "\nwhile the one constructed from equivalent python object is:\n" + to_dot_string(gr_raw)
         self.assertEqual( to_dot_string(gr), to_dot_string(gr_raw), msg= fail_message )
@@ -500,9 +500,9 @@ class TestMongoMetarequestQuery(unittest.TestCase):
             os.path.exists('test/results-data/subfolder/three.txt')
         )
 
-    def test_broker_report_chosed_dependencies_as_networkx_graph(self):
+    def test_pony_report_chosed_dependencies_as_networkx_graph(self):
         """
-        The bring operation return as a result the list of created
+        The deliver operation return as a result the list of created
         files as a result of the dependency resolution process
         It also must produce a log of the dependency resolution process
         in the form of a networkx graph.
@@ -533,7 +533,7 @@ class TestMongoMetarequestQuery(unittest.TestCase):
 
         }"""
 
-        file_list, gr = broker.bring_json(encoded_string)
+        file_list, gr = pony.deliver_json(encoded_string)
 
         self.assertEqual("""digraph {
     "{ NAME:dep-v1, VERSION:1.0.0 }" [penwidth=3 color=blue ];

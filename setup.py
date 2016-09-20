@@ -2,7 +2,7 @@
 
 from distutils.core import setup
 
-setup(	name='Broker',
+setup(	name='Pony',
         version='0.1.0',
         description='General purpose package manager based on MongoDB',
         author='Giuseppe Puoti',
@@ -10,12 +10,12 @@ setup(	name='Broker',
         url='',
         
         py_modules=[
-            'broker', 
+            'pony', 
             'portfolio',
             'dependencies',
             'alternative_set',
 
-            'broker_scons',
+            'pony_scons',
             'cli'
             # list them here when you add any other modules!
             ],
@@ -30,5 +30,5 @@ setup(	name='Broker',
             # add any other dependency package here in order to let pip install them as installation' side effect.
             ],
             
-        scripts = ['broker.py']  
+        scripts = ['pony.py']  
 )

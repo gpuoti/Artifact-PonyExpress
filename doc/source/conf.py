@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Broker documentation build configuration file, created by
+# pony documentation build configuration file, created by
 # sphinx-quickstart on Fri May 13 15:01:29 2016.
 #
 # This file is execfile()d with the current directory set to its
@@ -47,10 +47,10 @@ source_suffix = '.rst'
 #source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = 'broker'
+master_doc = 'pony'
 
 # General information about the project.
-project = 'Broker'
+project = 'pony'
 copyright = '2016, Giuseppe Puoti'
 author = 'Giuseppe Puoti'
 
@@ -204,7 +204,7 @@ html_static_path = ['_static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Brokerdoc'
+htmlhelp_basename = 'ponydoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -226,7 +226,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'Broker.tex', 'Broker Documentation',
+    (master_doc, 'pony.tex', 'pony Documentation',
      'Giuseppe Puoti', 'manual'),
 ]
 
@@ -256,7 +256,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'broker', 'Broker Documentation',
+    (master_doc, 'pony', 'pony Documentation',
      [author], 1)
 ]
 
@@ -270,8 +270,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Broker', 'Broker Documentation',
-     author, 'Broker', 'One line description of project.',
+    (master_doc, 'pony', 'pony Documentation',
+     author, 'pony', 'One line description of project.',
      'Miscellaneous'),
 ]
 

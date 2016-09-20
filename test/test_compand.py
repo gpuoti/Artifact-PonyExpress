@@ -4,7 +4,7 @@ import os
 import shutil
 import io
 
-import broker
+import pony
 from test.facilities import ensure_path, touch
 
 
@@ -33,12 +33,12 @@ class TestStringMethods(unittest.TestCase):
         Apply a filter on archived files: take only .txt files. In fact skip ignore.tx"""
         memory = io.BytesIO()
         
-        instruction = broker.pack('test/temp-data', 'test-data', '*.txt')
-        broker.gz_package(package_instructions= [instruction], mem=memory)
+        instruction = pony.pack('test/temp-data', 'test-data', '*.txt')
+        pony.gz_package(package_instructions= [instruction], mem=memory)
         
         memory = io.BytesIO(memory.getvalue())
-        instruction = broker.unpack('test-data', 'test/results-data')
-        broker.gz_unbox(unbox_instructions= [instruction], mem = memory)
+        instruction = pony.unpack('test-data', 'test/results-data')
+        pony.gz_unbox(unbox_instructions= [instruction], mem = memory)
         
         
         self.assertTrue (os.path.exists('test/results-data/one.txt'))
@@ -55,18 +55,18 @@ class TestStringMethods(unittest.TestCase):
         memory = io.BytesIO()
         
         instructions = [ 
-                        broker.pack('test/temp-data', 'test-data', '*.txt'),
-                        broker.pack('test/temp-data/subfolder/subsubfolder', 'moved-folder', '*.txt')
+                        pony.pack('test/temp-data', 'test-data', '*.txt'),
+                        pony.pack('test/temp-data/subfolder/subsubfolder', 'moved-folder', '*.txt')
                       ]
                   
-        broker.gz_package(package_instructions= instructions, mem=memory)
+        pony.gz_package(package_instructions= instructions, mem=memory)
         
         memory = io.BytesIO(memory.getvalue())
         instructions = [
-                        broker.unpack('test-data', 'test/results-data'),
-                        broker.unpack('moved-folder', 'test/results-data')
+                        pony.unpack('test-data', 'test/results-data'),
+                        pony.unpack('moved-folder', 'test/results-data')
                        ]
-        broker.gz_unbox(unbox_instructions= instructions, mem = memory)
+        pony.gz_unbox(unbox_instructions= instructions, mem = memory)
         
         
         self.assertTrue (os.path.exists('test/results-data/one.txt'))

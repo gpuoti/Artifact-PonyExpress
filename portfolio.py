@@ -15,12 +15,12 @@ def remove_any(l, ilist):
     return l
 
 class MongoConnectionInfo:
-    def __init__(self, broker_arguments = None):
-        if broker_arguments and broker_arguments.user:
-            self.host = broker_arguments.mongo
-            self.port = broker_arguments.port
-            self.user = broker_arguments.user
-            self.pwd = broker_arguments.pwd
+    def __init__(self, pony_arguments = None):
+        if pony_arguments and pony_arguments.user:
+            self.host = pony_arguments.mongo
+            self.port = pony_arguments.port
+            self.user = pony_arguments.user
+            self.pwd = pony_arguments.pwd
             self.controlled_access  = True
         else:
             self.host = 'localhost'
@@ -32,7 +32,7 @@ class MongoConnectionInfo:
         cli= MongoClient(host = self.host, port=self.port)
         print('connecting to: ' + self.host + ' : ' + str(self.port) + ' [controlled:' + str(self.controlled_access) + ']' )
         if self.controlled_access:
-            cli.broker_store.authenticate(self.user, self.pwd)
+            cli.pony_charge.authenticate(self.user, self.pwd)
         return cli
         
 
@@ -92,7 +92,7 @@ class NotInPortfolio (Exception):
           """ + str(self.explain) 
  
 class ImpossibleConfigurationException(Exception):
-    """Exception raised in case broker can't find an acceptable dependency configuration."""
+    """Exception raised in case pony can't find an acceptable dependency configuration."""
     def __init__(self, gr):
         self.gr = gr
 
@@ -211,7 +211,7 @@ class Portfolio:
     def __init__(self, db_connection_info=MongoConnectionInfo()):
         # setup the mongo connection
         self.connection = db_connection_info.connect()
-        self.collection = self.connection.broker_store.packages
+        self.collection = self.connection.pony_store.packages
         self.silent = False
 
     def encode_requirements(self, meta):
@@ -239,7 +239,7 @@ class Portfolio:
             pass#print(same_meta_cursor[0])
         return fail
 
-    def store(self,  package, meta):
+    def charge (self,  package, meta):
         meta = self.encode_requirements(meta)
         if(self.check(meta)):
             raise YetInPortfolio(meta)
@@ -286,7 +286,7 @@ class Portfolio:
         
     
     def take(self, meta_request):
-        # take the package from stored document
+        # take the package from charged document
         package = self._select(meta_request)['package']
         return package
         

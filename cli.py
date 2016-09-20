@@ -1,9 +1,9 @@
 """
-This module defines the command line interface to broker.
+This module defines the command line interface to pony.
 It provide facilities to properly end to end test the whole application. 
 """
 
-import broker
+import pony
 import portfolio
 from portfolio import Portfolio, MongoConnectionInfo
 
@@ -14,12 +14,12 @@ from argparse import ArgumentParser, FileType
 
 #meve the following in a proper module!
     
-def store(args):
+def charge(args):
     metadata = args.meta.read()
     connection_info = MongoConnectionInfo(args)
     
     try:
-        broker.store(db_connection_info = connection_info, json=metadata)
+        pony.charge(db_connection_info = connection_info, json=metadata)
     except portfolio.YetInPortfolio as ex:
         jobject = json.loads(metadata)
         try:
@@ -38,28 +38,28 @@ def store(args):
             pass
                 
         print ("""
-Store operation failed: there is a conflicting package in the portfolio. 
+charge operation failed: there is a conflicting package in the portfolio. 
   Metadata are:
 
   """ + json.dumps(jobject, indent=4))
 
-def bring(args):
+def deliver(args):
     connection_info = MongoConnectionInfo(args)
-    created_files, gr = broker.bring_json(args.meta.read(), db_connection_info=connection_info)
-    with open('.broker', 'w') as f:
+    created_files, gr = pony.deliver_json(args.meta.read(), db_connection_info=connection_info)
+    with open('.pony', 'w') as f:
         for fname in created_files:
             f.write(fname+'\n')
     
     return created_files, gr
 
 def clear(args):
-    with open('.broker', 'r') as f:
+    with open('.pony', 'r') as f:
         for fname in f:
             os.remove(fname[:-1])
 
 
 # setup the parser and its subparsers
-parser = ArgumentParser( prog='broker')
+parser = ArgumentParser( prog='pony')
 subparsers = parser.add_subparsers()
 
 # meta-informations source
@@ -73,11 +73,11 @@ parser.add_argument('--user', default='')
 # password
 parser.add_argument('--pwd', default='')
 
-store_command_parser = subparsers.add_parser('store')
-store_command_parser.set_defaults(func=store, dest='func')
+charge_command_parser = subparsers.add_parser('charge')
+charge_command_parser.set_defaults(func=charge, dest='func')
 
-bring_command_parser = subparsers.add_parser('bring')
-bring_command_parser.set_defaults(func=bring)
+deliver_command_parser = subparsers.add_parser('deliver')
+deliver_command_parser.set_defaults(func=deliver)
 
-bring_command_parser = subparsers.add_parser('clear')
-bring_command_parser.set_defaults(func=clear)
+deliver_command_parser = subparsers.add_parser('clear')
+deliver_command_parser.set_defaults(func=clear)

@@ -59,7 +59,7 @@ class TestRequirementFunctionalities (unittest.TestCase):
     
   def test_direct_dependencies_extraction(self):
     """
-    broker can receive a metainformation object and build direct requirements.
+    pony can receive a metainformation object and build direct requirements.
     The metainformations object can be constructed by decoding a json string into a python object the default way.
     """
     direct_dependencies = dep.make_direct(  [
@@ -133,17 +133,17 @@ class TestPortfolioRequirementDiscover (unittest.TestCase):
                                         {"NAME" : "DEP-2-1", "VERSION" : "1.1.1"},
                                         {"NAME" : "DEP-2-2", "VERSION" : "1.2.3"}
                                        ] }
-    repo.store(None, self.dep_1 )
-    repo.store(None, {"NAME" : "DEP-2-1", "VERSION" : "1.1.1", "TEST" : ""} )
-    repo.store(None, {"NAME" : "DEP-2-2", "VERSION" : "1.2.3", "TEST" : ""} )
-    repo.store(None,  self.dep_2 )    
-    repo.store(None, {"NAME" : "P1", "VERSION" : "1.0.0", "TEST" : "", 
+    repo.charge(None, self.dep_1 )
+    repo.charge(None, {"NAME" : "DEP-2-1", "VERSION" : "1.1.1", "TEST" : ""} )
+    repo.charge(None, {"NAME" : "DEP-2-2", "VERSION" : "1.2.3", "TEST" : ""} )
+    repo.charge(None,  self.dep_2 )    
+    repo.charge(None, {"NAME" : "P1", "VERSION" : "1.0.0", "TEST" : "", 
                       "DEPENDENCIES" : [ 
                                         {"NAME" : "DEP-1", "VERSION" : "0.1.0"},
                                         {"NAME" : "DEP-2", "VERSION" : "0.1.0"}
                                        ] } )
 
-    repo.store(None, {"NAME" : "P0", "VERSION" : "1.0.0", "TEST" : "", 
+    repo.charge(None, {"NAME" : "P0", "VERSION" : "1.0.0", "TEST" : "", 
                       "DEPENDENCIES" : [ 
                                         {"NAME" : "DEP-1", "VERSION" : "0.1.0"},
                                         {"NAME" : "DEP-2-1", "VERSION" : "1.1.1", "TEST" : ""}
@@ -197,7 +197,7 @@ class TestPortfolioRequirementDiscover (unittest.TestCase):
     """
     Check the portfolio can discover the dependencies graph for a list of projects.
     This is the case of building the graph of dependencies of a project
-    while it is still not mantained by broker. Need this to find out the dependency graph given the
+    while it is still not mantained by pony. Need this to find out the dependency graph given the
     set of dependencies listed into the json metainformations fils.
     """
     requirements, gr = self.connected_portfolio.requirements_discover (
@@ -245,8 +245,8 @@ class TestPortfolioRequirementDiscover (unittest.TestCase):
                         
                         
                         
-    self.connected_portfolio.store(None, self.dep_circular)
-    self.connected_portfolio.store(None, self.prj)
+    self.connected_portfolio.charge(None, self.dep_circular)
+    self.connected_portfolio.charge(None, self.prj)
     
     requirements, gr = self.connected_portfolio.requirements_discover( dep.Requirement ({ "NAME" : "P", "VERSION" : "0.0.3"})) 
     self.assertEqual(len(requirements), 7, msg="discovered requirements: " + str(requirements) ) 
@@ -256,12 +256,12 @@ class TestPortfolioRequirementDiscover (unittest.TestCase):
     
 class TestCanDealWithAlternativeDependencies(unittest.TestCase):
   """
-  Tests the broker project requirement detection mechanism in case of multiple alternative project dependency. 
-  The broker shall be able to:
+  Tests the pony project requirement detection mechanism in case of multiple alternative project dependency. 
+  The pony shall be able to:
     - constrain dependency choise in order to satisfy different (but compatible in some way) request from multiple dependant projects.
     - arbitrary choose a dependency project in case multiple project instancies can fulfill requests of dependant.
     - provide feedback on the dependency graph constructed with indication of project chosed and the one considered invalid due to constraint on requirements. 
-    - of course broker also provide feedback in case It is not possible to satisfy requirements due to existing constraints.
+    - of course pony also provide feedback in case It is not possible to satisfy requirements due to existing constraints.
   """
   def setUp(self):
     """ Setup a reference scenario. 
@@ -308,11 +308,11 @@ class TestCanDealWithAlternativeDependencies(unittest.TestCase):
                                         {"NAME" : "DEP-1", "VERSION" : "0.1.0"}
                                       ] }
     
-    self.connected_portfolio.store(None, self.dep_1)
-    self.connected_portfolio.store(None, self.dep_1_v2)
-    self.connected_portfolio.store(None, self.dep_2)
-    self.connected_portfolio.store(None, self.prj)
-    self.connected_portfolio.store(None, self.pb)
+    self.connected_portfolio.charge(None, self.dep_1)
+    self.connected_portfolio.charge(None, self.dep_1_v2)
+    self.connected_portfolio.charge(None, self.dep_2)
+    self.connected_portfolio.charge(None, self.prj)
+    self.connected_portfolio.charge(None, self.pb)
     
 
   def tearDown(self):
@@ -322,7 +322,7 @@ class TestCanDealWithAlternativeDependencies(unittest.TestCase):
 
   def test_only_one_alternative_dependency(self):
     """
-    Test broker can chose from alternative dependencies when it is constrained by some other requirement
+    Test pony can chose from alternative dependencies when it is constrained by some other requirement
     """
     
     requirements, gr = self.connected_portfolio.requirements_discover(dep.Requirement( {"NAME" : "PA"} ))
@@ -341,7 +341,7 @@ class TestCanDealWithAlternativeDependencies(unittest.TestCase):
   
   def test_multiple_alternative_resolved_random(self):
     """
-    Broker can resolve multiple alternative for dependencies using any of the available dependant package.
+    pony can resolve multiple alternative for dependencies using any of the available dependant package.
     """
     
     requirements, gr = self.connected_portfolio.requirements_discover(dep.Requirement( {"NAME" : "DEP-2"}))
@@ -356,7 +356,7 @@ class TestCanDealWithAlternativeDependencies(unittest.TestCase):
 
   def test_multiple_alternative_direct_requirements(self):
     """
-    Broker can detect and resolve multiple alternative direct requests using any of the available dependant package.
+    pony can detect and resolve multiple alternative direct requests using any of the available dependant package.
     The test require DEP-1 project witch is in the portfolio in versioni 0.1.0 and 0.2.0 so the request must be
     translated into a graph witch describe the request for both and then the graph reduced pruning alternatives.
     """
@@ -374,7 +374,7 @@ class TestCanDealWithAlternativeDependencies(unittest.TestCase):
     """+ str(requirements) )
     
   def test_conflicting_transitive_dependencies(self):
-    """When broker detect conflicting transitive dependencies it must raise exception. 
+    """When pony detect conflicting transitive dependencies it must raise exception. 
     The excetion raised must carry the annotated dependency graph for log and debugging purpose. Here we check the dot representation of the dependency graph.
     It may change in future, it is up to anyone who will make changes to check the updated version of this graph is descriptive enough to show the conflicts discovered.
     """

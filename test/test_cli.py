@@ -323,7 +323,7 @@ class TestStringMethods(unittest.TestCase):
 
     def tearDown(self):
         """
-        Destroy temporary folder structure and remove any mongo documents (broker box) 
+        Destroy temporary folder structure and remove any mongo documents (pony box) 
         inserted temporary for test purpose
         """
         shutil.rmtree('test/test-cli')
@@ -335,7 +335,7 @@ class TestStringMethods(unittest.TestCase):
         restore_cwd = os.getcwd()
 
         os.chdir(folder)
-        command_line = "broker store".split(' ')
+        command_line = "pony charge".split(' ')
         arguments = cli.parser.parse_args(command_line[1:])
         arguments.func(arguments)
 
@@ -359,28 +359,28 @@ class TestStringMethods(unittest.TestCase):
             self.assertTrue(ck.contain({"NAME" : "D", "VERSION" : "2"}))
             self.assertTrue(ck.contain({"NAME" : "D", "VERSION" : "3"}))
 
-    def test_cli_bring_op_no_dep(self):
+    def test_cli_deliver_op_no_dep(self):
         """
-        Checks the bring operation requested to build projects without
+        Checks the deliver operation requested to build projects without
         extra dependencies (projects named D in the example).
 
-        The only file added after a bring operation on this kind of projects should be 
-        .broker, the one that lists files from other projects
+        The only file added after a deliver operation on this kind of projects should be 
+        .pony, the one that lists files from other projects
         """
 
         with WorkingDirectorySet("test/test-cli/test-projects/Dv1") as project_folder:
-            command_line = "broker bring".split(' ')
+            command_line = "pony deliver".split(' ')
             arguments = cli.parser.parse_args(command_line[1:])
             arguments.func(arguments)
 
             prj_folder_files = files_in()
             prj_subfolders = subfolders_in()
             self.assertEqual(3, len(prj_folder_files), msg="more files then expected in project folder they are: " + str(prj_folder_files) )
-            self.assertEqual(0, len(prj_subfolders), msg="created new folders after bring operation they are: " + str(prj_subfolders) )
+            self.assertEqual(0, len(prj_subfolders), msg="created new folders after deliver operation they are: " + str(prj_subfolders) )
 
-    def test_cli_bring_op_simple_dep(self):
+    def test_cli_deliver_op_simple_dep(self):
         """
-        Checks the bring operation required to build simple projects with only one
+        Checks the deliver operation required to build simple projects with only one
         dependency and no alternatives, successfully prepare the project environment
         Will use Cv2 witch depends only on Dv3 or Dv2 as an example project.
 
@@ -389,28 +389,28 @@ class TestStringMethods(unittest.TestCase):
         """
 
         with WorkingDirectorySet("test/test-cli/test-projects/Cv2") as project_folder:
-            command_line = "broker bring".split(' ')
+            command_line = "pony deliver".split(' ')
             arguments = cli.parser.parse_args(command_line[1:])
             arguments.func(arguments)
 
             prj_folders_files = files_in()
             prj_subfolders = subfolders_in()
 
-            self.assertEqual(3, len(prj_folders_files), msg="Expect no new file other then .broker created in project folder. File list actually is: " + str(prj_folders_files) )
+            self.assertEqual(3, len(prj_folders_files), msg="Expect no new file other then .pony created in project folder. File list actually is: " + str(prj_folders_files) )
             self.assertEqual(1, len(prj_subfolders), msg="Expected result-folder created as project root folder subdirectory given the __UNBOX_INSTRUCTION__ into project metadata. Subfolders are: " + str(prj_subfolders) )
             self.assertEqual("result-folder", prj_subfolders[0], msg="Expect the only project subfolder created to be result-folder" )
             self.assertEqual(1, len(files_in('result-folder')), msg="Expect one new file created in result-folder.File list actually is: " + str('result-folder') ) 
 
-    def test_cli_bring_op_simple_transitive_dep(self):
+    def test_cli_deliver_op_simple_transitive_dep(self):
         """
-        Checks the bring operation when required to build projects with transitive dependencies.
+        Checks the deliver operation when required to build projects with transitive dependencies.
 
-        Here I'll use Bv1 which depends on Cv1 and in turn on Dv1 or Dv2 alternativelly. This will check broker detect and resolve
+        Here I'll use Bv1 which depends on Cv1 and in turn on Dv1 or Dv2 alternativelly. This will check pony detect and resolve
         correctly indirect dependencies. Still no constraing is required apart of dependency tree arbitrary pruning on alternatives.
         """
 
         with WorkingDirectorySet("test/test-cli/test-projects/Bv1"):
-            command_line = "broker bring".split(' ')
+            command_line = "pony deliver".split(' ')
             arguments = cli.parser.parse_args(command_line[1:])
             file_list, gr = arguments.func(arguments)
 
@@ -429,7 +429,7 @@ class TestStringMethods(unittest.TestCase):
             )
 
             self.assertEqual(3, len(prj_folders_files), 
-                                msg="Expect no new file other then .broker created in project folder. File list actually is: " + str(prj_folders_files) )
+                                msg="Expect no new file other then .pony created in project folder. File list actually is: " + str(prj_folders_files) )
             self.assertEqual(1, len(prj_subfolders),
                                 msg="Expected result-folder created as project root folder subdirectory given the __UNBOX_INSTRUCTION__ into project metadata. Subfolders are: " + str(prj_subfolders) )
             self.assertEqual("result-folder", prj_subfolders[0],
@@ -438,18 +438,18 @@ class TestStringMethods(unittest.TestCase):
                                 msg="Expect exactly 2 files created into the dependency destination folder, one for each projects. File list actually is: " + str(os.listdir("result-folder")) )
              
 
-    def test_cli_bring_op_complex_transitive_dep(self):
+    def test_cli_deliver_op_complex_transitive_dep(self):
         """
-        Checks the bring operation when required to build projects with complex transitive dependencies.
+        Checks the deliver operation when required to build projects with complex transitive dependencies.
 
-        Here broker is supposed to use constraints to resolve dependencies that can
+        Here pony is supposed to use constraints to resolve dependencies that can
         fulfill all transitive dependencies. 
 
         I'll use Av0 the dependency graph can be seen as documentation of setup method.
         """
 
         with WorkingDirectorySet("test/test-cli/test-projects/Av0"):
-            command_line = "broker bring".split(' ')
+            command_line = "pony deliver".split(' ')
             arguments = cli.parser.parse_args(command_line[1:])
             try:
                 file_list, gr = arguments.func(arguments)
@@ -484,7 +484,7 @@ class TestStringMethods(unittest.TestCase):
             )
 
             self.assertEqual(3, len(prj_folders_files), 
-                                msg="Expect no new file other then .broker created in project folder. File list actually is: " + str(prj_folders_files) )
+                                msg="Expect no new file other then .pony created in project folder. File list actually is: " + str(prj_folders_files) )
             self.assertEqual(1, len(prj_subfolders),
                                 msg="Expected result-folder created as project root folder subdirectory given the __UNBOX_INSTRUCTION__ into project metadata. Subfolders are: " + str(prj_subfolders) )
             self.assertEqual("result-folder", prj_subfolders[0],
