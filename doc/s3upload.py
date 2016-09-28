@@ -22,8 +22,8 @@ def ls(base_path):
     return [ PublishOp(file_path, file_path[len(base_path)+1:]) for file_path in files_to_publish ]
 
 def publish(publish_ops, bucket_name):
-    AWS_ACCESS_KEY_ID = 'AKIAJZYRYFD3OXP5UJFA'
-    AWS_SECRET_ACCESS_KEY = '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'
+    AWS_ACCESS_KEY_ID = ''
+    AWS_SECRET_ACCESS_KEY = ''
 
     
     conn = boto.connect_s3(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
@@ -38,4 +38,4 @@ def publish(publish_ops, bucket_name):
         k.set_contents_from_filename(op.source, cb=percent_cb, num_cb=5)
 
 if __name__ == '__main__':
-    publish(ls('user-doc/html'), bucket_name = 'artifact-pony-express')
+    publish(ls('user-doc'), bucket_name = 'artifact-pony-express')
