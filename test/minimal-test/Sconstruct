@@ -1,4 +1,0 @@
-import pony_scons
-
-build_environment = pony_scons.establish_contact(Environment())
-build_environment.charge(source='meta')

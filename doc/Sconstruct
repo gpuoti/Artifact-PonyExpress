@@ -1,0 +1,4 @@
+import rotative
+
+env = rotative.register(Environment())
+doc_builder = env.rotative( source = 'source/conf.py')
