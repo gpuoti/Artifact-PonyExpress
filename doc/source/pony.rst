@@ -2,10 +2,10 @@
 Artifact PonyExpress
 ====================
 
-Artifact PonyExpress or simply Pony is an artifact repository and package manager that aims to simplify software modules integration into big projects.
+Artifact PonyExpress (or simply Pony) is an artifact repository and package manager that aims to simplify software modules integration into big projects.
 It is designed with native (read modern C++) development in mind but it is usefull everywhere there is an environment to setup in order to transform versioned data using any software. 
 
-.. note:: As pony works well with binary components, the transformation function (the tool used to transform data) itself may be a versioned input component.
+.. note:: As pony works well with binary components, the transformation function (the tool used to transform data) itself may be a packaged component.
 
 Pony use MongoDB as backend to store your packages and meta-informations. The pony's MongoDB database is the **pony_store** and the only collection it uses as a repository is named **packages**.
 
@@ -22,8 +22,8 @@ For a quick taste see: :ref:`quick_start_guide`
 Use-case
 --------
 
-In a tipical application what you are going to do is integrate a bounce of existing modules that your organization has in the codebase, and write some more code to implement more functionality on top of them.
-Sometime this is a long and error prone process. And it is boring!
+In a tipical application what you are going to do is integrate a bounce of existing modules that your organization has in the codebase, and write some more code to implement more functionality on top of them. So any project will require a start up fase when you'll setup a proper developing environment. This happen every time you'll start a project regardless of its dimensions, sometime it is a long and error prone process. And it is boring!
+
 You have to get:
 
   * static libraries (and the related header files)
@@ -40,13 +40,17 @@ You have to get:
   * any dinamic link library you will need to run or test your executable
   * copy all those files in the right place in your project folder structure
   
-And this operations may be performed multiple times if you really need to be sure what version of your component are using. I mean you really want to be sure the correct package is there at the moment your build engine is going to use it. Ideally, you should be able to create a sandbox environment directly from archived modules in order to avoid unreplicable bugs. This approch can help maintain a clean working environment which can be reproduced from green field each time.
+And this operations may be performed multiple times if you really need to be sure what version of your component are using. I mean you really want to be sure the correct package is there at the moment your build engine is going to use it. Ideally, you should be able to create a sandbox environment directly from archived modules every time in order to avoid unreplicable bugs. This approch can help maintain a clean working environment which can be reproduced from green field each time.
+
+As for my experience, if this process in't kept simple, it is avoided possibly resulting in a "personal" build environment (the product depends on the machine that build machine) and/or overly growth projects with more and more functionality added only because "it was the easiest place" to add some code/parameters instead of an isolated module.
+
+Pony, as other package manager, aims to simplfy this process to let you have a working environment from just few metadata describing it and its dependencies. It aims to have this result the easiest way and without any interference with your build engine choise.
 
 Package attributes
 ------------------
 
 Pony act as a package manager and only as a package manager. It will not force you to leave your favourite build engine and, even if I'll focus on SCons, it will try to be as friendly as possible with any of them. 
-Once developer has a stable version to release, it will ask the build engine to build and deliver a particular version of his artifact. The relevant attributes definition is completly up to the developer/user and described into a meta-informations file that can be stored alongside the sources. Additional meta-informations can be inserted by the build engine to describe build relevant informations such as structure allignment or target machine. 
+Once developer has a stable version to release, he will ask the build engine to build and deliver a particular version of his artifact. The relevant attributes definition is completly up to the developer/user and described into a meta-informations file that can be stored alongside the sources. Additional meta-informations can be inserted by the build engine to describe build relevant informations such as structure allignment or target machine. 
 The name used by pony to refers to the artifact packed with the related metadata is **box**. So pony load boxes to the repository when it's asked to manage them and deliver boxes as they are required.
 
 A minimal meta-informations file can be something like:
