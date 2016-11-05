@@ -232,9 +232,6 @@ class TestStringMethods(unittest.TestCase):
     "NAME" : "D",
     "VERSION" : "1",
     "TEST": "",
-
-    "DEPENDENCIES" : [
-    ],
     
     "__BOX_INSTRUCTIONS__" : [
                         {
@@ -286,9 +283,6 @@ class TestStringMethods(unittest.TestCase):
     "NAME" : "D",
     "VERSION" : "3",
     "TEST": "",
-
-    "DEPENDENCIES" : [
-    ],
     
     "__BOX_INSTRUCTIONS__" : [
                         {

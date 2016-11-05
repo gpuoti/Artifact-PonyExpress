@@ -223,11 +223,14 @@ def deliver_json(json_text, db_connection_info=MongoConnectionInfo()):
         del jobject["__UNBOX_INSTRUCTIONS__"]
     except KeyError:
         pass
-        
-    files, gr = deliver(instructions, jobject["DEPENDENCIES"], db_connection_info=db_connection_info)
-    print ("deliver log" )
-    for f in files:
-        print (str(f))
+    try:    
+        files, gr = deliver(instructions, jobject["DEPENDENCIES"], db_connection_info=db_connection_info)
+        print ("deliver log" )
+        for f in files:
+            print (str(f))
+    except KeyError:
+        print('no dependencies detected, nothing to deliver')
+        return portfolio.no_dependencies()
     
     print()
     print("dependencies graph")

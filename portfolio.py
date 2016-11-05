@@ -412,3 +412,6 @@ class Portfolio:
         graph = self.acceptable_configurations(raw_graph)[-1]
       
         return [n for n in graph.nodes() if not graph.node[n]['pruned']], graph
+
+def no_dependencies():
+    return [], nx.DiGraph()
