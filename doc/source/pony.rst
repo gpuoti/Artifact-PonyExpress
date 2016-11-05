@@ -79,7 +79,9 @@ It is a list of packaging instructions, that is, a list of json objects that spe
   * a source path using the attribute **FROM**
   * a destination path based on package root using the attribute **TO**
   * a file filter using the attribute **FILTER**
-  
+
+.. note:: Pony will package any file that fulfill the filter in the path indicated as source or in any subfolder. It will also mantain the folder structure below the source path.
+
 Given a list of packaging instructions, pony will prepare the artifact content as a tarball stored as an attribute of the mongo document.
 
 .. code-block:: json
