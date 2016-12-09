@@ -277,7 +277,6 @@ class Bag:
             configurations = [config for config in acceptable_config_generator.constraint() ]
         except ConfigurationImpossible:
             raise ImpossibleConfigurationException(gr)
-        print("" + str(len(configurations)) + " valid configurations")
 
         return configurations
 
@@ -290,7 +289,6 @@ class Bag:
             config = next(acceptable_config_generator.constraint())
         except ConfigurationImpossible:
             raise ImpossibleConfigurationException(gr)
-        print("no valid configurations")
 
         return config
 

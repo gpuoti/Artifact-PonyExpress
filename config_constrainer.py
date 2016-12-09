@@ -22,8 +22,6 @@ class config_generator:
 
             self.gr.node[n]['ndep'] = self._ndep(self.gr.neighbors(n))
         
-        print("clusters")
-        print(self.clusters)
     
     def _ndep(self,requirements):
         """
@@ -45,41 +43,25 @@ class config_generator:
         return resuced_gr
 
     def _local_constraint(self, n, configuration):
-        if(type(configuration) != dict):
-            print("_local_constraint configuration is not a dict")
-            print(configuration)
+        assert type(configuration) == dict
         
-        print ("constrining local")
-        print (configuration)
         local_constrained_configuration = dict()
-        for valid_neighbor in  self.gr.neighbors(n):
-            if valid_neighbor not in configuration[valid_neighbor.NAME]: 
-                print (valid_neighbor)
-                print("not in")
-                print(configuration[valid_neighbor.NAME])
-                continue
+        for valid_neighbor in  [x for x in self.gr.neighbors(n) if x in configuration[x.NAME] ]:
             try:
                 local_constrained_configuration[valid_neighbor.NAME] += [valid_neighbor]
             except KeyError:
                 local_constrained_configuration[valid_neighbor.NAME] = [valid_neighbor]
 
         if len(local_constrained_configuration) < self.gr.node[n]['ndep']:
-            print ("raising exception")
-            print(len(local_constrained_configuration))
-            print("while ndep for " + str(n))
-            print(self.gr.node[n]['ndep']) 
             raise ConfigurationImpossible
 
         for variable in local_constrained_configuration:
             configuration[variable] = local_constrained_configuration[variable]
-        print('return constrained configuration')
-        print(configuration)
+        
         return configuration
 
     def _constraint_next(self, variables, unconstrained_configuration):
-        if(type(unconstrained_configuration) != dict):
-            print("_constraint_next unconstrained_configuration is not a dict")
-            print(unconstrained_configuration)
+        assert type(unconstrained_configuration) == dict
         
         if len (variables) > 0:
             cluster = variables[0]
@@ -87,30 +69,22 @@ class config_generator:
             alternatives = unconstrained_configuration[cluster]
             alternatives.sort(reverse = True)
             for alternative in alternatives:
-                print ("entering alternative")
-                print (alternative)
                 try:
                     constrained = unconstrained_configuration
                     constrained[cluster] = [alternative]
 
                     constrained= self._local_constraint(alternative, constrained)
-                    print ('constrained')
-                    print (constrained)
                     for sub_configuration in self._constraint_next(variables[1:], constrained): 
-                        print ("yield config  " + str((alternative,) + sub_configuration))
                         yield (alternative,) + sub_configuration
 
                 except ConfigurationImpossible:
-                    print ("impossible configuration catched")
                     pass
         else:
             yield ()
                 
     def constraint(self):
-        print ('entering contraint method')
         alternative_count = 0
         for config in self._constraint_next(list(self.clusters.keys()), self.clusters):
-            print("--- yielding configuration ---")
             print (config)
             alternative_count += 1
 
@@ -118,11 +92,8 @@ class config_generator:
             gr_config = self.gr.copy()
             for n in [n for n in gr_config.nodes() if n not in config]:
                 gr_config.node[n]['pruned'] = True
-            #gr_config.remove_nodes_from([n for n in gr_config.nodes() if n not in config])
-                
                 
             yield gr_config
-            
             
         if alternative_count == 0:
             raise ConfigurationImpossible
