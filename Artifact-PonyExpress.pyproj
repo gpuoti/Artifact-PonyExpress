@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{b96f5335-bf5b-40f7-86d3-c873984ba0d5}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>alternative_set.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>{9a7a9026-48c1-4688-9d5d-e5699d47d074}</InterpreterId>
+    <InterpreterVersion>3.5</InterpreterVersion>
+    <IsWindowsApplication>False</IsWindowsApplication>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="doc\source\img-source\build_environment.dot.svg" />
+    <Content Include="doc\source\img-source\icon.png" />
+    <Content Include="doc\source\img\box_definition.svg" />
+    <Content Include="doc\source\img\broker-in-action.svg" />
+    <Content Include="doc\source\img\loc_stats.png" />
+    <Content Include="doc\source\img\loc_stats.svg" />
+    <Content Include="doc\source\img\packaging-op.svg" />
+    <Content Include="doc\user-doc\html\genindex.html" />
+    <Content Include="doc\user-doc\html\pony.html" />
+    <Content Include="doc\user-doc\html\python-interface.html" />
+    <Content Include="doc\user-doc\html\quick-start.html" />
+    <Content Include="doc\user-doc\html\scons-interaction.html" />
+    <Content Include="doc\user-doc\html\search.html" />
+    <Content Include="doc\user-doc\html\searchindex.js" />
+    <Content Include="doc\user-doc\html\_sources\pony.txt" />
+    <Content Include="doc\user-doc\html\_sources\python-interface.txt" />
+    <Content Include="doc\user-doc\html\_sources\quick-start.txt" />
+    <Content Include="doc\user-doc\html\_sources\scons-interaction.txt" />
+    <Content Include="doc\user-doc\html\_static\ajax-loader.gif" />
+    <Content Include="doc\user-doc\html\_static\basic.css" />
+    <Content Include="doc\user-doc\html\_static\comment-bright.png" />
+    <Content Include="doc\user-doc\html\_static\comment-close.png" />
+    <Content Include="doc\user-doc\html\_static\comment.png" />
+    <Content Include="doc\user-doc\html\_static\css\badge_only.css" />
+    <Content Include="doc\user-doc\html\_static\css\theme.css" />
+    <Content Include="doc\user-doc\html\_static\doctools.js" />
+    <Content Include="doc\user-doc\html\_static\down-pressed.png" />
+    <Content Include="doc\user-doc\html\_static\down.png" />
+    <Content Include="doc\user-doc\html\_static\file.png" />
+    <Content Include="doc\user-doc\html\_static\fonts\fontawesome-webfont.svg" />
+    <Content Include="doc\user-doc\html\_static\jquery-1.11.1.js" />
+    <Content Include="doc\user-doc\html\_static\jquery.js" />
+    <Content Include="doc\user-doc\html\_static\js\modernizr.min.js" />
+    <Content Include="doc\user-doc\html\_static\js\theme.js" />
+    <Content Include="doc\user-doc\html\_static\minus.png" />
+    <Content Include="doc\user-doc\html\_static\plus.png" />
+    <Content Include="doc\user-doc\html\_static\pygments.css" />
+    <Content Include="doc\user-doc\html\_static\searchtools.js" />
+    <Content Include="doc\user-doc\html\_static\underscore-1.3.1.js" />
+    <Content Include="doc\user-doc\html\_static\underscore.js" />
+    <Content Include="doc\user-doc\html\_static\up-pressed.png" />
+    <Content Include="doc\user-doc\html\_static\up.png" />
+    <Content Include="doc\user-doc\html\_static\websupport.js" />
+    <Content Include="test.txt" />
+    <Content Include="test\test-project-1\one.txt" />
+    <Content Include="test\test-project-1\subfolder\three.txt" />
+    <Content Include="test\test-project-1\two.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="alternative_set.py" />
+    <Compile Include="bag.py" />
+    <Compile Include="cli.py" />
+    <Compile Include="dependencies.py" />
+    <Compile Include="doc\s3upload.py" />
+    <Compile Include="doc\source\conf.py" />
+    <Compile Include="pony.py" />
+    <Compile Include="pony_scons.py" />
+    <Compile Include="portfolio.py" />
+    <Compile Include="setup.py" />
+    <Compile Include="test\facilities.py" />
+    <Compile Include="test\test_alternative_set.py" />
+    <Compile Include="test\test_cli.py" />
+    <Compile Include="test\test_compand.py" />
+    <Compile Include="test\test_mongo_interaction.py" />
+    <Compile Include="test\test_recursive_dependency_detection.py" />
+    <Compile Include="test\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="doc" />
+    <Folder Include="doc\source" />
+    <Folder Include="doc\source\img" />
+    <Folder Include="doc\source\img-source" />
+    <Folder Include="doc\user-doc\" />
+    <Folder Include="doc\user-doc\html" />
+    <Folder Include="doc\user-doc\html\_sources" />
+    <Folder Include="doc\user-doc\html\_static" />
+    <Folder Include="doc\user-doc\html\_static\css" />
+    <Folder Include="doc\user-doc\html\_static\fonts" />
+    <Folder Include="doc\user-doc\html\_static\js" />
+    <Folder Include="test" />
+    <Folder Include="test\test-project-1" />
+    <Folder Include="test\test-project-1\subfolder" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="{9a7a9026-48c1-4688-9d5d-e5699d47d074}\3.5" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>
