@@ -1,7 +1,6 @@
 import unittest
 import cli
-import bag as bag
-import bag as portfolio 
+import bag 
 from test.facilities import *
 import shutil
 
@@ -411,7 +410,7 @@ class TestStringMethods(unittest.TestCase):
             prj_folders_files = files_in()
             prj_subfolders = subfolders_in()
 
-            self.assertEqual(portfolio.to_dot_string(gr), """digraph {
+            self.assertEqual(bag.to_dot_string(gr), """digraph {
     "{ NAME:C, VERSION:1 }" [penwidth=3 ];
     "{ NAME:D, VERSION:1 }" [penwidth=3 color=blue ];
     "{ NAME:D, VERSION:2 }" [penwidth=3 ];
@@ -447,16 +446,17 @@ class TestStringMethods(unittest.TestCase):
             arguments = cli.parser.parse_args(command_line[1:])
             try:
                 file_list, gr = arguments.func(arguments)
-            except  portfolio.TransitiveDependencyUnreachable as e:
+            except  bag.TransitiveDependencyUnreachable as e:
                 print ("EXCEPTION EXCEPTION")
-                print (portfolio.to_dot_string(e.gr))
+                print (bag.to_dot_string(e.gr))
                 raise e
 
 
             prj_folders_files = files_in()
             prj_subfolders = subfolders_in()
             self.maxDiff = None
-            self.assertEqual(portfolio.to_dot_string(gr), """digraph {
+            result_graph = bag.to_dot_string(gr)
+            self.assertEqual(result_graph, """digraph {
     "{ NAME:B, VERSION:1 }" [penwidth=3 color=blue ];
     "{ NAME:B, VERSION:2 }" [penwidth=3 color=blue ];
     "{ NAME:B, VERSION:3 }" [penwidth=3 ];

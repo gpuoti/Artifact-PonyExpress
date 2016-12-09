@@ -4,8 +4,8 @@ It provide facilities to properly end to end test the whole application.
 """
 
 import pony
-import portfolio
-from portfolio import Portfolio, MongoConnectionInfo
+import bag 
+from bag import Bag, MongoConnectionInfo
 
 import json
 import os, sys
@@ -20,7 +20,7 @@ def charge(args):
     
     try:
         pony.charge(db_connection_info = connection_info, json=metadata)
-    except portfolio.YetInPortfolio as ex:
+    except bag.YetInBag as ex:
         jobject = json.loads(metadata)
         try:
             del jobject['package']
@@ -38,7 +38,7 @@ def charge(args):
             pass
                 
         print ("""
-charge operation failed: there is a conflicting package in the portfolio. 
+charge operation failed: there is a conflicting package in the bag. 
   Metadata are:
 
   """ + json.dumps(jobject, indent=4))

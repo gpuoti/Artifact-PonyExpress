@@ -6,8 +6,8 @@ import io
 import colorama
 from tabulate import tabulate
 
-import portfolio
-from portfolio import Portfolio, MongoConnectionInfo
+import bag as bag
+from bag import Bag, MongoConnectionInfo
 import dependencies
 
 
@@ -151,11 +151,11 @@ def charge(instructions=None, metainfo=None, json=None, file =None, db_connectio
    
 def charge_low_level(instructions, metainfo, db_connection_info=MongoConnectionInfo()):
     package_content = io.BytesIO()
-    connected_portfolio = Portfolio(db_connection_info)
-    if connected_portfolio.check(metainfo):
-        raise portfolio.YetInPortfolio(metainfo)
+    connected_bag = Bag(db_connection_info)
+    if connected_bag.check(metainfo):
+        raise bag.YetInBag(metainfo)
     gz_package(package_instructions = instructions, mem = package_content)
-    connected_portfolio.charge(package_content.getvalue(), metainfo)
+    connected_bag.charge(package_content.getvalue(), metainfo)
     
     if not silent:
         print ("package was " + str(int(len(package_content.getvalue()) / 1024)) + "kB") 
@@ -182,15 +182,15 @@ def charge_json(json_text, db_connection_info=MongoConnectionInfo()):
     
 def deliver_one(instructions, meta_request, db_connection_info=MongoConnectionInfo()):
     
-    connected_portfolio = Portfolio(db_connection_info)
-    package = connected_portfolio.take(meta_request)
+    connected_bag = Bag(db_connection_info)
+    package = connected_bag.take(meta_request)
     package_content = io.BytesIO(package)
     return gz_unbox(unbox_instructions = instructions, mem = package_content)
     
 def deliver(instructions, meta_requests, db_connection_info=MongoConnectionInfo()):
     """deliver artifacts defined by each of meta_requests then apply unbox instructions to each."""
     created_files = []
-    connected_portfolio = Portfolio(db_connection_info)
+    connected_bag = Bag(db_connection_info)
     
     if isinstance(meta_requests, dict):
         print ('metarequest is a dict, let make a list!')
@@ -198,9 +198,9 @@ def deliver(instructions, meta_requests, db_connection_info=MongoConnectionInfo(
 
     direct_requirements = [dependencies.Requirement(r) for r in meta_requests]
     meta_request = [dr.meta_request() for dr in direct_requirements]
-    meta_requests, gr =connected_portfolio.requirements_discover( direct_requirements)
+    meta_requests, gr =connected_bag.requirements_discover( direct_requirements)
     print(
-        'results from portfolio: ' + str(meta_requests) + '   ' + str(gr)
+        'results from bag: ' + str(meta_requests) + '   ' + str(gr)
     )
     
     if isinstance(meta_requests, list):
@@ -230,11 +230,11 @@ def deliver_json(json_text, db_connection_info=MongoConnectionInfo()):
             print (str(f))
     except KeyError:
         print('no dependencies detected, nothing to deliver')
-        return portfolio.no_dependencies()
+        return bag.no_dependencies()
     
     print()
     print("dependencies graph")
-    print (portfolio.to_dot_string(gr))
+    print (bag.to_dot_string(gr))
 
     return   files, gr
             

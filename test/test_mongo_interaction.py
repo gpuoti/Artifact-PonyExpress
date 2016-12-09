@@ -7,7 +7,7 @@ import os
 
 import pymongo
 import pony
-from portfolio import to_dot_string
+from bag import to_dot_string
 
 
 def ensure_path(path):
@@ -88,7 +88,7 @@ class TestMongoStoreOp(unittest.TestCase):
         self.assertTrue(package[0]['package'])
 
         # and that it prevent you from store multiple artifact with same metadata!
-        with self.assertRaises(pony.portfolio.YetInPortfolio):
+        with self.assertRaises(pony.bag.YetInBag):
             pony.charge(instructions, some_metadata)
 
     def test_save_package_and_complex_metadata(self):
@@ -137,7 +137,7 @@ class TestMongoStoreOp(unittest.TestCase):
         self.assertTrue(package[0]['package'])
 
         # and that it prevent you from store multiple artifact with same metadata!
-        with self.assertRaises(pony.portfolio.YetInPortfolio):
+        with self.assertRaises(pony.bag.YetInBag):
             pony.charge(instructions, some_metadata)
 
     def test_insert_based_on_json(self):
@@ -332,7 +332,7 @@ class TestMongoMetarequestQuery(unittest.TestCase):
 
     def test_deliver_op_fail_version_exact(self):
         """
-        Test a fail case, it must raise NotInPortfolio exception because
+        Test a fail case, it must raise NotInBag exception because
         there isn't a stored package with request metadata
         """
 
@@ -342,7 +342,7 @@ class TestMongoMetarequestQuery(unittest.TestCase):
         ]
 
         meta_request = {"NAME" : "dep-v1", "VERSION" :  "1.0.1"}
-        with self.assertRaises(pony.portfolio.NotInPortfolio):
+        with self.assertRaises(pony.bag.NotInBag):
             pony.deliver(instructions, meta_request)
 
     def test_deliver_op_version_greater_from_json(self):

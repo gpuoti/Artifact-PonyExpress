@@ -1,8 +1,8 @@
 import unittest
 import collections
 import dependencies as dep
-import bag as portfolio
-from bag import Portfolio, to_dot_string
+import bag 
+from bag import Bag, to_dot_string
 import networkx as nx
 import time
 from operator import xor
@@ -121,11 +121,11 @@ digraph {
     print("DOT:  "+ dot_graph)
       
 
-class TestPortfolioRequirementDiscover (unittest.TestCase):
+class TestBagRequirementDiscover (unittest.TestCase):
   def setUp(self):
-    self.connected_portfolio = Portfolio()
-    self.connected_portfolio.silent = True;
-    repo = self.connected_portfolio
+    self.connected_bag = Bag()
+    self.connected_bag.silent = True;
+    repo = self.connected_bag
     repo.collection.delete_many({"TEST" : ""})
     self.dep_1 = {"NAME" : "DEP-1", "VERSION" : "0.1.0", "TEST" : ""}
     self.dep_2 = {"NAME" : "DEP-2", "VERSION" : "0.1.0", "TEST" : "", 
@@ -149,27 +149,27 @@ class TestPortfolioRequirementDiscover (unittest.TestCase):
                                         {"NAME" : "DEP-2-1", "VERSION" : "1.1.1", "TEST" : ""}
                                        ] } )
     
-    self.connected_portfolio.silent = False;
+    self.connected_bag.silent = False;
 
   def tearDown(self):
-    self.connected_portfolio.collection.delete_many({"TEST" : ""})
+    self.connected_bag.collection.delete_many({"TEST" : ""})
 
-  def test_portfolio_query_for_direct_project_dependencies(self):
+  def test_bag_query_for_direct_project_dependencies(self):
     """
-    Check the portfolio can discover direct dependencies for a given requirement
+    Check the bag can discover direct dependencies for a given requirement
     """
-    requirements = self.connected_portfolio.requirements_for (dep.Requirement ({ "NAME" : "P1", "VERSION" : "1.0.0"}))
+    requirements = self.connected_bag.requirements_for (dep.Requirement ({ "NAME" : "P1", "VERSION" : "1.0.0"}))
     
     self.assertEqual( len(requirements), 2);
     self.assertTrue( dep.Requirement(self.dep_1) in requirements, msg= str(dep.Requirement(self.dep_1) ) + "\nRESULTS: " + str(requirements) )
     self.assertTrue( dep.Requirement(self.dep_2) in requirements, msg= str(dep.Requirement(self.dep_2) ) + "\nRESULTS: " + str(requirements) )
 
 
-  def test_portfolio_query_for_direct_project_dependencies_only_direct_dep(self):
+  def test_bag_query_for_direct_project_dependencies_only_direct_dep(self):
     """
-    Check the portfolio can discover direct dependencies for a given requirement
+    Check the bag can discover direct dependencies for a given requirement
     """
-    requirements, gr = self.connected_portfolio.requirements_discover (dep.Requirement ({ "NAME" : "P0", "VERSION" : "1.0.0"}))
+    requirements, gr = self.connected_bag.requirements_discover (dep.Requirement ({ "NAME" : "P0", "VERSION" : "1.0.0"}))
     self.assertEqual(
       len(requirements),
       gr.number_of_nodes(),
@@ -178,9 +178,9 @@ class TestPortfolioRequirementDiscover (unittest.TestCase):
     self.assertEqual( len(requirements), 3, msg='found requirements: ' + str(requirements));
     self.assertTrue( dep.Requirement(self.dep_1) in requirements, msg= str(dep.Requirement(self.dep_1) ) + "\nRESULTS: " + str(requirements) )
 
-  def test_portfolio_query_for_project_dependencies(self):
+  def test_bag_query_for_project_dependencies(self):
     
-    requirements, gr = self.connected_portfolio.requirements_discover(dep.Requirement ({ "NAME" : "P1", "VERSION" : "1.0.0"}))
+    requirements, gr = self.connected_bag.requirements_discover(dep.Requirement ({ "NAME" : "P1", "VERSION" : "1.0.0"}))
     self.assertEqual(
       len(requirements),
       gr.number_of_nodes(),
@@ -193,14 +193,14 @@ class TestPortfolioRequirementDiscover (unittest.TestCase):
     dep_2_1 = [r for r in requirements if r.NAME == "DEP-2-1"][0]
     self.assertEqual( dep_2_1.parent, dep.Requirement(self.dep_2) )
     
-  def test_portfolio_query_for_multiple_dependencies(self):
+  def test_bag_query_for_multiple_dependencies(self):
     """
-    Check the portfolio can discover the dependencies graph for a list of projects.
+    Check the bag can discover the dependencies graph for a list of projects.
     This is the case of building the graph of dependencies of a project
     while it is still not mantained by pony. Need this to find out the dependency graph given the
     set of dependencies listed into the json metainformations fils.
     """
-    requirements, gr = self.connected_portfolio.requirements_discover (
+    requirements, gr = self.connected_bag.requirements_discover (
       [
         dep.Requirement ( { "NAME" : "P0", "VERSION" : "1.0.0"}),
         dep.Requirement ( { "NAME" : "DEP-2"})
@@ -216,9 +216,9 @@ class TestPortfolioRequirementDiscover (unittest.TestCase):
     self.assertTrue( dep.Requirement(self.dep_1) in requirements, msg= str(dep.Requirement(self.dep_1) ) + "\nRESULTS: " + str(requirements) )
 
 
-  def test_portfolio_query_for_project_cyrcular_dependency(self):
+  def test_bag_query_for_project_cyrcular_dependency(self):
     """
-    Checks the portfolio can deal, *using simple policy* with circular dependencies. Basically it do not loop infinitelly at least.
+    Checks the bag can deal, *using simple policy* with circular dependencies. Basically it do not loop infinitelly at least.
     """
     
     self.dep_circular = { "NAME" : "DEP_CIR", "VERSION" : "0.0.3", "TEST" : "",
@@ -245,15 +245,15 @@ class TestPortfolioRequirementDiscover (unittest.TestCase):
                         
                         
                         
-    self.connected_portfolio.charge(None, self.dep_circular)
-    self.connected_portfolio.charge(None, self.prj)
+    self.connected_bag.charge(None, self.dep_circular)
+    self.connected_bag.charge(None, self.prj)
     
-    requirements, gr = self.connected_portfolio.requirements_discover( dep.Requirement ({ "NAME" : "P", "VERSION" : "0.0.3"})) 
+    requirements, gr = self.connected_bag.requirements_discover( dep.Requirement ({ "NAME" : "P", "VERSION" : "0.0.3"})) 
     self.assertEqual(len(requirements), 7, msg="discovered requirements: " + str(requirements) ) 
     
-    graph = self.connected_portfolio.requirements_graph(dep.Requirement( {"NAME" : "P", "VERSION" : "0.0.3"}))
+    graph = self.connected_bag.requirements_graph(dep.Requirement( {"NAME" : "P", "VERSION" : "0.0.3"}))
     print ("check this")
-    print(portfolio.to_dot_string(graph))
+    print(bag.to_dot_string(graph))
 
     
 class TestCanDealWithAlternativeDependencies(unittest.TestCase):
@@ -286,11 +286,11 @@ class TestCanDealWithAlternativeDependencies(unittest.TestCase):
     """
 
     
-    self.connected_portfolio = Portfolio()
-    self.connected_portfolio.silent = True;
-    repo = self.connected_portfolio
+    self.connected_bag = Bag()
+    self.connected_bag.silent = True;
+    repo = self.connected_bag
 
-    self.connected_portfolio.collection.delete_many({"TEST" : ""})
+    self.connected_bag.collection.delete_many({"TEST" : ""})
     self.dep_1 =    {"NAME" : "DEP-1", "VERSION" : "0.1.0", "TEST" : "" }
     self.dep_1_v2 = {"NAME" : "DEP-1", "VERSION" : "0.2.0", "TEST" : ""}
     self.dep_2 =    {"NAME" : "DEP-2", "VERSION" : "0.1.0", "TEST" : "",
@@ -310,15 +310,15 @@ class TestCanDealWithAlternativeDependencies(unittest.TestCase):
                                         {"NAME" : "DEP-1", "VERSION" : "0.1.0"}
                                       ] }
     
-    self.connected_portfolio.charge(None, self.dep_1)
-    self.connected_portfolio.charge(None, self.dep_1_v2)
-    self.connected_portfolio.charge(None, self.dep_2)
-    self.connected_portfolio.charge(None, self.prj)
-    self.connected_portfolio.charge(None, self.pb)
+    self.connected_bag.charge(None, self.dep_1)
+    self.connected_bag.charge(None, self.dep_1_v2)
+    self.connected_bag.charge(None, self.dep_2)
+    self.connected_bag.charge(None, self.prj)
+    self.connected_bag.charge(None, self.pb)
     
 
   def tearDown(self):
-    self.connected_portfolio.collection.delete_many({"TEST" : ""})
+    self.connected_bag.collection.delete_many({"TEST" : ""})
     pass
 
 
@@ -327,7 +327,7 @@ class TestCanDealWithAlternativeDependencies(unittest.TestCase):
     Test pony can chose from alternative dependencies when it is constrained by some other requirement
     """
     
-    requirements, gr = self.connected_portfolio.requirements_discover(dep.Requirement( {"NAME" : "PA"} ))
+    requirements, gr = self.connected_bag.requirements_discover(dep.Requirement( {"NAME" : "PA"} ))
     self.assertEqual(len(requirements), 3, msg = """
       expected three requirement (including project itself) but found """ + str(len(requirements)) + """
       They actually are: """ + str(requirements) + """
@@ -346,7 +346,7 @@ class TestCanDealWithAlternativeDependencies(unittest.TestCase):
     pony can resolve multiple alternative for dependencies using any of the available dependant package.
     """
     
-    requirements, gr = self.connected_portfolio.requirements_discover(dep.Requirement( {"NAME" : "DEP-2"}))
+    requirements, gr = self.connected_bag.requirements_discover(dep.Requirement( {"NAME" : "DEP-2"}))
     self.assertEqual(len(requirements), 2, msg = """
       expected two requirements (including project itself) but found """ + str(len(requirements)) + """
       They actually are: """ + str(requirements) )
@@ -359,16 +359,16 @@ class TestCanDealWithAlternativeDependencies(unittest.TestCase):
   def test_multiple_alternative_direct_requirements(self):
     """
     pony can detect and resolve multiple alternative direct requests using any of the available dependant package.
-    The test require DEP-1 project witch is in the portfolio in versioni 0.1.0 and 0.2.0 so the request must be
+    The test require DEP-1 project witch is in the bag in versioni 0.1.0 and 0.2.0 so the request must be
     translated into a graph witch describe the request for both and then the graph reduced pruning alternatives.
     """
     
-    requirements, gr = self.connected_portfolio.requirements_discover(dep.Requirement( {"NAME" : "DEP-1"}))
+    requirements, gr = self.connected_bag.requirements_discover(dep.Requirement( {"NAME" : "DEP-1"}))
     self.assertEqual(len(requirements), 1, msg = """
       expected only one requirements (including project itself) but found """ + str(len(requirements)) + """
       They actually are: """ + str(requirements) )
 
-    self.assertEqual(len(gr.nodes()), 2, msg= "expected two alternative version of DEP-1 detected into the portfolio.\n"+ to_dot_string(gr))
+    self.assertEqual(len(gr.nodes()), 2, msg= "expected two alternative version of DEP-1 detected into the bag.\n"+ to_dot_string(gr))
       
     req_d1 = dep.Requirement(self.dep_1)
     req_d1_v2 = dep.Requirement(self.dep_1_v2)
@@ -381,12 +381,12 @@ class TestCanDealWithAlternativeDependencies(unittest.TestCase):
     It may change in future, it is up to anyone who will make changes to check the updated version of this graph is descriptive enough to show the conflicts discovered.
     """
     self.maxDiff=None
-    with self.assertRaises(portfolio.ImpossibleConfigurationException):
-        requirements, gr = self.connected_portfolio.requirements_discover(dep.Requirement( {"NAME" : "PB"}))
+    with self.assertRaises(bag.ImpossibleConfigurationException):
+        requirements, gr = self.connected_bag.requirements_discover(dep.Requirement( {"NAME" : "PB"}))
     try:
-        self.connected_portfolio.requirements_discover(dep.Requirement( {"NAME" : "PB"}))
-        self.assert_("expect it to raise exception, didn't it failed yet?\n"+ portfolio.to_dot_string())
-    except portfolio.ImpossibleConfigurationException as exception_raised:
+        self.connected_bag.requirements_discover(dep.Requirement( {"NAME" : "PB"}))
+        self.assert_("expect it to raise exception, didn't it failed yet?\n"+ bag.to_dot_string())
+    except bag.ImpossibleConfigurationException as exception_raised:
         expected_dot_graph = """digraph {
     "{ NAME:DEP-1, VERSION:0.1.0 }" [penwidth=3 ];
     "{ NAME:DEP-1, VERSION:0.2.0 }" [penwidth=3 ];

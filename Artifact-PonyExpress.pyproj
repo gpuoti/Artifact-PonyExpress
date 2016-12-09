@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{b96f5335-bf5b-40f7-86d3-c873984ba0d5}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>alternative_set.py</StartupFile>
+    <StartupFile>config_constrainer.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -71,7 +71,7 @@
     <Content Include="test\test-project-1\two.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="alternative_set.py" />
+    <Compile Include="config_constrainer.py" />
     <Compile Include="bag.py" />
     <Compile Include="cli.py" />
     <Compile Include="dependencies.py" />
@@ -79,10 +79,8 @@
     <Compile Include="doc\source\conf.py" />
     <Compile Include="pony.py" />
     <Compile Include="pony_scons.py" />
-    <Compile Include="portfolio.py" />
     <Compile Include="setup.py" />
     <Compile Include="test\facilities.py" />
-    <Compile Include="test\test_alternative_set.py" />
     <Compile Include="test\test_cli.py" />
     <Compile Include="test\test_compand.py" />
     <Compile Include="test\test_mongo_interaction.py" />

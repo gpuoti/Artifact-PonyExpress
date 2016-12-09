@@ -1,6 +1,6 @@
 import collections
 import json
-from alternative_set import combine, config_generator, ConfigurationImpossible
+from config_constrainer import config_generator, ConfigurationImpossible
 from  pymongo import MongoClient
 import dependencies as dep
 import networkx as nx
@@ -8,12 +8,6 @@ import networkx as nx
 import sys
 from bson.binary import Binary
 
-
-def remove_any(l, ilist):
-    for i in [x for x in ilist if x in l]:
-        l.remove(i)
-
-    return l
 
 class ImpossibleConfigurationException(Exception):
     """Exception raised in case pony can't find an acceptable dependency configuration."""
@@ -26,70 +20,8 @@ The dependency graph is
 """ + to_dot_string(self.gr)
 
 
-class ProjectCluster:
-    """A project cluster is a group of project in the application dependency graph with the same name."""
-
-    def __init__(self, G, name):
-        self.graph = G
-        self.incoming_edges = []
-        self.name = name
-
-        components = [n for n in self.graph.nodes() if n.NAME == name]
-        for n in components:
-            self.incoming_edges += self.graph.in_edges(n)
-
-    def dependants(self):
-        """get the dependant projects that is projects that depends from any of the projects in the cluster."""
-        return [in_edge[0] for in_edge in self.incoming_edges]
-
-    def components(self):
-        "get the component projects into the cluster"
-        #return [in_edge[1] for in_edge in self.incoming_edges]
-        return  [n for n in self.graph.nodes() if n.NAME == self.name]
-
-    def unaccepted_nodes(self):        
-        """
-        Any project in the cluster that do not satify the requirement
-        from any dependant, is considered unaccepted and returned by this method.
-        Notice that it is possible that, once you have considered unacceptable a project, 
-        other dependant project may become unacceptable because of unmeet requirements. """
-        
-        dependant_projects = set([dependant.NAME for dependant in self.dependants()])
-        unacceptable = []
-        for n in self.components():
-            dependants = set([dependency[0].NAME for dependency in self.incoming_edges if dependency[1] == n])
-            if len(dependants) < len(dependant_projects):
-                unacceptable.append(n)
-        
-        return unacceptable
-
-    def __iter__(self):
-        return self.components().__iter__()
-
-    def __getitem__(self, i):
-        return self.components().__getitem__(i)
-
-    def __str__(self):
-        return self.name
-
-    def __repr__(self):
-        return self.name
-
-
-def make_project_clusters(G):
-    """
-    Clusterize projects in the graph based on their names.
-    """
-
-    clusters = []
-    pnames = set()
-    for n in G.nodes():
-        pnames.add(n.NAME)
-
-    for pname in pnames:
-        clusters.append( ProjectCluster( G, pname) )
-
-    return clusters
+def no_dependencies():
+    return [], nx.DiGraph()
 
 def quote(s, qm = '"'):
     return qm+ str(s) + qm
@@ -182,9 +114,6 @@ class YetInBag (Exception):
 
 class NotInBag (Exception):
 
-
-
-    
     def __init__ (self, meta_informations):
         self.explain = meta_informations
         
@@ -196,7 +125,7 @@ class NotInBag (Exception):
         Received metadata:
           """ + str(self.explain) 
 
-class Portfolio:
+class Bag:
     def __init__(self, db_connection_info=MongoConnectionInfo()):
         # setup the mongo connection
         self.connection = db_connection_info.connect()
@@ -231,7 +160,7 @@ class Portfolio:
     def charge (self,  package, meta):
         meta = self.encode_requirements(meta)
         if(self.check(meta)):
-            raise YetInPortfolio(meta)
+            raise YetInBag(meta)
         # add content to metadata. it will become a rich package!
         if sys.version_info < (3, 0):
             meta['package'] = Binary(package)
@@ -252,7 +181,7 @@ class Portfolio:
 
         matching_packages = self.collection.find(meta_request)
         if matching_packages.count() == 0:
-            raise NotInPortfolio(meta_request)
+            raise NotInBag(meta_request)
         
         # return the first matching package
         return matching_packages
@@ -279,7 +208,7 @@ class Portfolio:
         return package
         
     def translate_requirements(self, requests, select_any = True):
-        """Translates the requirements into an explicit requirement given the matching boxed into actually in the portfolio. """
+        """Translates the requirements into an explicit requirement given the matching boxed into actually in the bag. """
         
         if not isinstance(requests, list):
             requests = [requests]    
@@ -338,53 +267,6 @@ class Portfolio:
             gr = nx.compose(gr, sub_gr)
             
         return gr
-
-    def alternative_graph_maker(self, raw_graph):
-        print ("making alternatives")
-        clusters = make_project_clusters(raw_graph)
-        print ("based on " + str(clusters))
-        for alternative in combine(clusters):
-            gr = raw_graph.copy()
-            print("making alternative graph")
-            for n in gr.nodes():
-                gr.node[n]['pruned'] = n not in alternative
-                if n in alternative:
-                    print(str(n)) 
-            
-            yield gr
-
-    def check_node(self, gr, node):
-        """Checks that the number of dependant project classified by name is the same as the number of not pruned dependant project node."""
-
-        dependant_nodes = [edge[1] for edge in gr.edges(node)]
-        dependant_valid_nodes = [edge[1] for edge in gr.edges(node) if not gr.node[edge[1]]['pruned'] ]
-        dependant_projects = set()
-        
-        for n in dependant_nodes:
-            try:
-                dependant_projects.add( n.NAME )
-            except KeyError:
-                # ignore empty graph node for now
-                pass
-        print("valid nodes: " + str(dependant_valid_nodes))
-        print("dependant projects: " + str(dependant_projects))
-        print(str(len(dependant_valid_nodes) == len(dependant_projects)))
-        return len(dependant_valid_nodes) == len(dependant_projects) 
-        
-    
-    def check_graph(self, gr):
-        acceptable = True
-        clusters = make_project_clusters(gr)
-        
-        for cluster in clusters:
-            acceptable_cluster = False
-            for n in cluster.components():
-                acceptable_cluster = acceptable_cluster or self.check_node(gr, n)
-            acceptable = acceptable and acceptable_cluster
-        
-        
-        return acceptable
-        
     
     def acceptable_configurations(self, gr):
         if len(gr.nodes()) == 0:
@@ -399,10 +281,23 @@ class Portfolio:
 
         return configurations
 
+    def first_acceptable_configuration(self, gr):
+        if len(gr.nodes()) == 0:
+            return [gr]
+        
+        acceptable_config_generator = config_generator(gr)
+        try:
+            config = next(acceptable_config_generator.constraint())
+        except ConfigurationImpossible:
+            raise ImpossibleConfigurationException(gr)
+        print("no valid configurations")
+
+        return config
+
     def requirements_discover(self, direct_requirements):
         direct_requirements = self.translate_requirements(direct_requirements, select_any=False)
         raw_graph = self.requirements_graph(direct_requirements)
 
-        graph = self.acceptable_configurations(raw_graph)[-1]
+        graph = self.first_acceptable_configuration(raw_graph)
       
         return [n for n in graph.nodes() if not graph.node[n]['pruned']], graph

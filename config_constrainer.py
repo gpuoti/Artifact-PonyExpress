@@ -2,23 +2,6 @@
 import networkx as nx
 import dependencies as dep
 
-def combine(alternative_sets):
-
-    if len(alternative_sets) > 0:
-        frist_set = alternative_sets[0]
-        if type(alternative_sets[0]) is not list:
-            frist_set = list(alternative_sets[0])
-            frist_set.sort()
-
-        if len(alternative_sets) <2:
-            for alternative in frist_set:
-                yield alternative, 
-        else:
-            for alternative in [(alt,) for alt in frist_set]:
-                for sub_configuration in combine(alternative_sets[1:]):
-                    yield alternative + sub_configuration
-
-
 class ConfigurationImpossible(Exception):
     """Exception raised in case pony can't find an acceptable dependency configuration."""
 
@@ -101,7 +84,9 @@ class config_generator:
         if len (variables) > 0:
             cluster = variables[0]
 
-            for alternative in  unconstrained_configuration[cluster]:
+            alternatives = unconstrained_configuration[cluster]
+            alternatives.sort(reverse = True)
+            for alternative in alternatives:
                 print ("entering alternative")
                 print (alternative)
                 try:
