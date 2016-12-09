@@ -3,8 +3,8 @@ digraph {
     edge [color=gray penwidth=2 ];
     
     VCS -> Sandbox;
-    portfolio -> Broker -> Sandbox -> VCS;
-    Broker -> portfolio;
+    bag -> Broker -> Sandbox -> VCS;
+    Broker -> bag;
     
     VCS -> "Build engine";
     Broker -> "Build engine";

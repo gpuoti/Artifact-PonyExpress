@@ -153,7 +153,7 @@ To let the user organize his project independelly from the way its dependencies 
   }
   
 Pony allow user to specify (and require) any attribute, and some of those can also be appended during the build process (i.e. the TARGET may depend from a build parameter).
-Attributes to describe required components may be specified using special functions (the ones available to query mongoDB). In the example above, the required version of *SecondComponentName* is any of the ones with version 1.0.0 or above available in the portfolio. 
+Attributes to describe required components may be specified using special functions (the ones available to query mongoDB). In the example above, the required version of *SecondComponentName* is any of the ones with version 1.0.0 or above available in the portfolio, also known as the **pony bag**. 
 
 Command line
 ------------

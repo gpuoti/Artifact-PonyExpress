@@ -15,7 +15,7 @@ pony let you do two fondamental operations:
 The **charge** operation
 -----------------------
 
-The charge operation consist of make a tarball of the an artifact you are going to store into the portfolio and then actually store it as a document into a mongo database with any metadata is relevant in your context. 
+The charge operation consist of make a tarball of the an artifact you are going to store into the bag (the portfolio of available projects) and then actually store it as a document into a mongo database with any metadata is relevant in your context. 
 The created tarball can be organized as for your preference; This means the structure stored into the tarball can differ from the source one on your filesystem. That is, you can define your own package structure.
 So, what pony needs to **charge** an artifact is:
 
@@ -73,7 +73,7 @@ It is pretty similar to the charge operation. In fact you send the pony a list o
 
   pony.deliver(instructions, meta_request)  
 
-The snippet above requires two projects from the portfolio named **dep-v1** and **prj61** and move their content according to the list of unpack operations.  
+The snippet above requires two projects from the bag named **dep-v1** and **prj61** and move their content according to the list of unpack operations.  
 
 
 The metadata file
