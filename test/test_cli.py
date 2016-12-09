@@ -1,7 +1,7 @@
 import unittest
 import cli
-
-import portfolio 
+import bag as bag
+import bag as portfolio 
 from test.facilities import *
 import shutil
 

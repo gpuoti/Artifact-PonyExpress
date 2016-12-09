@@ -1,8 +1,8 @@
 import unittest
 import collections
 import dependencies as dep
-import portfolio
-from portfolio import Portfolio, to_dot_string
+import bag as portfolio
+from bag import Portfolio, to_dot_string
 import networkx as nx
 import time
 from operator import xor
@@ -252,6 +252,8 @@ class TestPortfolioRequirementDiscover (unittest.TestCase):
     self.assertEqual(len(requirements), 7, msg="discovered requirements: " + str(requirements) ) 
     
     graph = self.connected_portfolio.requirements_graph(dep.Requirement( {"NAME" : "P", "VERSION" : "0.0.3"}))
+    print ("check this")
+    print(portfolio.to_dot_string(graph))
 
     
 class TestCanDealWithAlternativeDependencies(unittest.TestCase):

@@ -235,3 +235,4 @@ MANIFEST
 
 # VSCode temporary files
 .browse.*.db 
+__pycache__/
