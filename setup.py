@@ -11,7 +11,8 @@ setup(	name='Pony',
         
         py_modules=[
             'pony', 
-            'portfolio',
+            'bag',
+            'config_constrainer',
             'dependencies',
             'alternative_set',
 
