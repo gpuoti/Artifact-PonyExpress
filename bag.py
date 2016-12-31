@@ -88,7 +88,7 @@ class MongoConnectionInfo:
         cli= MongoClient(host = self.host, port=self.port)
         print('connecting to: ' + self.host + ' : ' + str(self.port) + ' [controlled:' + str(self.controlled_access) + ']' )
         if self.controlled_access:
-            cli.pony_charge.authenticate(self.user, self.pwd)
+            cli.pony_store.authenticate(self.user, self.pwd)
         return cli
 
 class YetInBag (Exception):

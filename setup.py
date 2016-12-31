@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(	name='Pony',
-        version='0.2.0',
+        version='0.2.5',
         description='General purpose package manager based on MongoDB',
         author='Giuseppe Puoti',
         author_email='giuseppe.puoti@gmail.com',

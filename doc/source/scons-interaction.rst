@@ -35,9 +35,45 @@ Then you can use the environment using the **charge** and **deliver** builders.
     import pony_scons
     env = pony_scons.establish_contact(Environment())
 
-    env.deliver('meta')
+    dep_resolver = env.deliver('meta')
     # ...
     # some more build steps here
     # ...
-    env.charge('meta')
+    publish = env.charge('meta')
 
+In the simple example above, I've not specified a particular mongodb server host so pony assumes I'm requiring it to connect to the service running on localhost waiting at mongodb default port 27017. This will probably not be the case in your working environment.
+To request pony to connect to a specific host at a non default port, you can specify additional properties for the required environment:
+
+    mongo_db
+        the host you want to connect to
+
+    mongo_port
+        the port to use for the comunication with the host
+
+    mongo_user
+        to connect as a specific user
+
+    mongo_pwd
+        to be able to use mongo service as an authenticated user
+
+Consider that, to not write your password in the code, you'll probably feed the password as a command line parameter at the scons lanch. So a real sconstruct file will probably look like:
+
+.. code-block:: python
+
+import pony_scons
+
+
+    AddOption('--pwd',
+            dest='mongo_password',
+            type='string',
+            nargs=1,
+            action='store',
+            help='mongodb server password')
+
+
+    env = Environment(MSVC_VERSION='14.0', TARGET_ARCH='x86', mongo_db='mongo-service.com', mongo_user='user-name', mongo_pwd=GetOption('mongo_password'), mongo_port=12345)
+    env = pony_scons.establish_contact(env)
+
+
+
+    
