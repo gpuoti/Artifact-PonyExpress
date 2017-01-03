@@ -3,6 +3,7 @@ Artifact PonyExpress
 ====================
 
 The pony helps you trade software or data modules!
+It is a general purpose package and dependency system that aims to be simple and fast. It is not constrained to any build system or language even if it was designed with native C++ development and Scons in mind.
 
 Install
 -------
@@ -12,7 +13,7 @@ Once you have the distrubution package as a tarball or zipfile, simply run:
 
 .. code-block:: bash
     
-    > pip install pony-0.1.0.tar.gz
+    > pip install pony-0.2.5.tar.gz
     
 
 pip package build instructions

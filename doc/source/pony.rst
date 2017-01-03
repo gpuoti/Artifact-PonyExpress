@@ -162,13 +162,13 @@ It is quite simple to use pony from command line. To charge pony to manage your 
 
 .. code-block:: bash
 
-  pony --meta "meta-informations.json" charge
+  pony.py --meta "meta-informations.json" charge
   
 While to retrieve dependencies, before you start build your project write:
 
 .. code-block:: bash
 
-  pony --meta "meta-informations.json" deliver
+  pony.py --meta "meta-informations.json" deliver
   
 for an even simpler interface, use the standard name for the meta-informations file: **meta.json**. In this case you can just omit the --meta option.
 More command line options are available to let the user specify MongoDB connection property. Here is the complete list:
