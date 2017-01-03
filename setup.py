@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-setup(	name='Pony',
+setup(	name='pony-express',
         license = "LGPL-3",
         version='0.2.5.a1',
         description='General purpose package and dependency manager based on MongoDB',

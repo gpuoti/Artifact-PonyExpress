@@ -9,11 +9,10 @@ Install
 -------
 
 Pony is a python powered program, it can be installed using pip.
-Once you have the distrubution package as a tarball or zipfile, simply run:
 
 .. code-block:: bash
-    
-    > pip install pony-0.2.5.tar.gz
+
+    > pip install pony-express
     
 
 pip package build instructions
