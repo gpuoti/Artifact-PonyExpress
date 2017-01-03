@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(	name='Pony',
         license = "LGPL-3",
-        version='0.2.5',
+        version='0.2.5.a1',
         description='General purpose package and dependency manager based on MongoDB',
         author='Giuseppe Puoti',
         author_email='giuseppe.puoti@gmail.com',
@@ -13,7 +13,7 @@ setup(	name='Pony',
         classifiers=[
             "Development Status :: 3 - Alpha",
             "Topic :: Software Development :: Version Control",
-            "Topic :: System :: Archiving :: Packaging"
+            "Topic :: System :: Archiving :: Packaging",
             "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
         ],
         
