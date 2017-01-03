@@ -15,7 +15,7 @@ setup(	name='Pony',
             "Topic :: Software Development :: Version Control",
             "Topic :: System :: Archiving :: Packaging"
             "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
-        ]
+        ],
         
         py_modules=[
             'pony', 
