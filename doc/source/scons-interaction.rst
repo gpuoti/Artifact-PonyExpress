@@ -60,10 +60,10 @@ Consider that, to not write your password in the code, you'll probably feed the 
 
 .. code-block:: python
 
-import pony_scons
+  import pony_scons
 
 
-    AddOption('--pwd',
+  AddOption('--pwd',
             dest='mongo_password',
             type='string',
             nargs=1,
@@ -71,8 +71,8 @@ import pony_scons
             help='mongodb server password')
 
 
-    env = Environment(MSVC_VERSION='14.0', TARGET_ARCH='x86', mongo_db='mongo-service.com', mongo_user='user-name', mongo_pwd=GetOption('mongo_password'), mongo_port=12345)
-    env = pony_scons.establish_contact(env)
+  env = Environment(MSVC_VERSION='14.0', TARGET_ARCH='x86', mongo_db='mongo-service.com', mongo_user='user-name', mongo_pwd=GetOption('mongo_password'), mongo_port=12345)
+  env = pony_scons.establish_contact(env)
 
 
 
