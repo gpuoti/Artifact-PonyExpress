@@ -37,11 +37,11 @@ def charge(args):
         except:
             pass
                 
-        print ("""
+        print(("""
 charge operation failed: there is a conflicting package in the bag. 
   Metadata are:
 
-  """ + json.dumps(jobject, indent=4))
+  """ + json.dumps(jobject, indent=4)))
 
 def deliver(args):
     connection_info = MongoConnectionInfo(args)
