@@ -10,7 +10,7 @@ class PublishOp(object):
         self.s3_bucket = destination.replace('\\','/') 
 
 def percent_cb(complete, total):
-    print((str(complete/1024) + ' / ' + str(total/1024) + ' kb  transmitted'))
+    print(str(complete/1024) + ' / ' + str(total/1024) + ' kb  transmitted')
     
 
 def ls(base_path):
@@ -32,7 +32,7 @@ def publish(publish_ops, bucket_name):
     bucket = conn.get_bucket(bucket_name)
 
     for op in publish_ops:
-        print('Uploading %s to Amazon S3 bucket %s' % (op.source, op.s3_bucket))
+        print 'Uploading %s to Amazon S3 bucket %s' % (op.source, op.s3_bucket)
         k = Key(bucket)
         k.key = op.s3_bucket
         k.set_contents_from_filename(op.source, cb=percent_cb, num_cb=5)

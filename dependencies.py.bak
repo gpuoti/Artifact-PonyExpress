@@ -39,7 +39,7 @@ class Requirement(object):
     def perfect_match(self, other):
         for x in [prop for prop in self.__dict__ if prop in other.__dict__]:
             if self.__dict__[x] != other.__dict__[x]:
-                print(("unmatched " + x))
+                print ("unmatched " + x)
                 return False
         return True
 
