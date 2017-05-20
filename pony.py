@@ -109,7 +109,7 @@ def gz_package(package_instructions, shelf=None, mem=None):
     
     # print the operation log
     if not silent:
-        print((tabulate(repath_log, headers= ['', 'saved in'])))
+        print(tabulate(repath_log, headers= ['', 'saved in']))
     
 def gz_unbox(unbox_instructions, package_path=None, mem=None):
     """
@@ -131,7 +131,7 @@ def gz_unbox(unbox_instructions, package_path=None, mem=None):
         package.extractall()
         
     # print the operation log
-    print((tabulate(unbox_log, headers= ['', 'unboxed in'])))
+    print(tabulate(unbox_log, headers= ['', 'unboxed in']))
     return [move[1] for move in unbox_log]
     
 def load_metadata(file_path='meta.json') :
@@ -158,7 +158,7 @@ def charge_low_level(instructions, metainfo, db_connection_info=MongoConnectionI
     connected_bag.charge(package_content.getvalue(), metainfo)
     
     if not silent:
-        print(("package was " + str(int(len(package_content.getvalue()) / 1024)) + "kB")) 
+        print("package was " + str(int(len(package_content.getvalue()) / 1024)) + "kB") 
 
 def charge_json_file(path, db_connection_info=MongoConnectionInfo()):
     f = open(path, "r")
@@ -199,16 +199,16 @@ def deliver(instructions, meta_requests, db_connection_info=MongoConnectionInfo(
     direct_requirements = [dependencies.Requirement(r) for r in meta_requests]
     meta_request = [dr.meta_request() for dr in direct_requirements]
     meta_requests, gr =connected_bag.requirements_discover( direct_requirements)
-    print((
+    print(
         'results from bag: ' + str(meta_requests) + '   ' + str(gr)
-    ))
+    )
     
     if isinstance(meta_requests, list):
         for r in meta_requests:
-            print(("REQUIRE> "+ str(r)))
+            print("REQUIRE> "+ str(r))
             created_files += deliver_one(instructions, r, db_connection_info=db_connection_info)
     else:
-        print(("REQUIRE FAILS> "+ str(meta_requests)))
+        print("REQUIRE FAILS> "+ str(meta_requests))
     
     return [s.replace('\\','/') for s in created_files], gr
 
@@ -227,14 +227,14 @@ def deliver_json(json_text, db_connection_info=MongoConnectionInfo()):
         files, gr = deliver(instructions, jobject["DEPENDENCIES"], db_connection_info=db_connection_info)
         print ("deliver log" )
         for f in files:
-            print((str(f)))
+            print(str(f))
     except KeyError:
         print('no dependencies detected, nothing to deliver')
         return bag.no_dependencies()
     
     print()
     print("dependencies graph")
-    print((bag.to_dot_string(gr)))
+    print(bag.to_dot_string(gr))
 
     return   files, gr
             
@@ -247,8 +247,8 @@ if __name__ == '__main__':
     start_time = time.time()
     
     arguments = cli.parser.parse_args(sys.argv[1:])
-    print((dir(arguments)))
+    print(dir(arguments))
     arguments.func(arguments)
     
     end_time = time.time()
-    print(( """Executed in """ + str(int( (end_time - start_time)) ) + " s"))
+    print( """Executed in """ + str(int( (end_time - start_time)) ) + " s")
