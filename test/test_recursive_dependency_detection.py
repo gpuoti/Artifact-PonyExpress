@@ -118,7 +118,7 @@ digraph {
   "DEP-2-2" -> "DEP-2"
   "DEP-2-1-1" -> "DEP-2-1"
 }""")
-    print(("DOT:  "+ dot_graph))
+    print("DOT:  "+ dot_graph)
       
 
 class TestBagRequirementDiscover (unittest.TestCase):
@@ -253,7 +253,7 @@ class TestBagRequirementDiscover (unittest.TestCase):
     
     graph = self.connected_bag.requirements_graph(dep.Requirement( {"NAME" : "P", "VERSION" : "0.0.3"}))
     print ("check this")
-    print((bag.to_dot_string(graph)))
+    print(bag.to_dot_string(graph))
 
     
 class TestCanDealWithAlternativeDependencies(unittest.TestCase):

@@ -448,7 +448,7 @@ class TestStringMethods(unittest.TestCase):
                 file_list, gr = arguments.func(arguments)
             except  bag.TransitiveDependencyUnreachable as e:
                 print ("EXCEPTION EXCEPTION")
-                print((bag.to_dot_string(e.gr)))
+                print(bag.to_dot_string(e.gr))
                 raise e
 
 

@@ -86,7 +86,7 @@ class MongoConnectionInfo:
             
     def connect(self):
         cli= MongoClient(host = self.host, port=self.port)
-        print(('connecting to: ' + self.host + ' : ' + str(self.port) + ' [controlled:' + str(self.controlled_access) + ']' ))
+        print('connecting to: ' + self.host + ' : ' + str(self.port) + ' [controlled:' + str(self.controlled_access) + ']' )
         if self.controlled_access:
             cli.pony_store.authenticate(self.user, self.pwd)
         return cli
@@ -171,7 +171,7 @@ class Bag:
         del meta['package']
         if not self.silent:
             print ('package archived')
-            print((str(meta)))
+            print(str(meta))
     
     def _select_all(self, meta_request):
         """Select all alternative package matching the request"""
