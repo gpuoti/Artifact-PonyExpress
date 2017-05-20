@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(	name='pony-express',
         license = "LGPL-3",
-        version='0.2.5.a1',
+        version='0.2.5.a2',
         description='General purpose package and dependency manager based on MongoDB',
         long_description="""
 Artifact PonyExpress (or simply Pony) is an artifact repository and package manager that aims to simplify software modules integration into big projects. It is designed with native (read modern C++) development in mind but it is usefull everywhere there is an environment to setup in order to transform versioned data using any software.
