@@ -57,7 +57,7 @@ Now, if your company use a binary repository to store those artifacts, and use *
                           "Version"  : "1.2.8",
                           "TARGET"   : "x86"
                         }
-                      ]
+                      ],
                       
     "__UNBOX_INSTRUCTIONS__" : [
                                   {
@@ -125,7 +125,7 @@ or, in a more complex environment with a properly hosted mongodb cluster:
                           "Version"  : "1.2.8",
                           "TARGET"   : "x86"
                         }
-                      ]
+                      ],
                       
     "__UNBOX_INSTRUCTIONS__" : [
                                   {

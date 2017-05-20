@@ -7,9 +7,7 @@ It is designed with native (read modern C++) development in mind but it is usefu
 
 .. note:: As pony works well with binary components, the transformation function (the tool used to transform data) itself may be a packaged component.
 
-Pony use MongoDB as backend to store your packages and meta-informations. The pony's MongoDB database is the **pony_store** and the only collection it uses as a repository is named **packages**.
-
-You'll need a running local or remote MongoDB database in order to use pony. 
+Pony use MongoDB as backend to store your packages and meta-informations so a running local or remote MongoDB database is needed in order to use pony. The pony's MongoDB database is the **pony_store** and the only collection it uses as a repository is named **packages**.
 
 You can perform two main operation from the pony command line:
   
@@ -90,7 +88,7 @@ Given a list of packaging instructions, pony will prepare the artifact content a
     "NAME"          : "TheProjectName",
     "Version"       : "2.1.7",
     "StructAllign"  : 1,
-    "TARGET"        : "x86"
+    "TARGET"        : "x86",
 
     "__BOX_INSTRUCTIONS__"  : [ 
                                 {
@@ -122,7 +120,7 @@ To let the user organize his project independelly from the way its dependencies 
     "NAME"          : "TheProjectName",
     "MajorVersion"  : "2.1.7",
     "StructAllign"  : 1,
-    "TARGET"        : "x86"
+    "TARGET"        : "x86",
     
     "DEPENDENCIES"  : [
                         { 
@@ -135,7 +133,7 @@ To let the user organize his project independelly from the way its dependencies 
                           "Version"  : { "$gte" : 1.0.0" }
                           "TARGET"   : "x86"
                         }
-                      ]
+                      ],
                       
     "__UNBOX_INSTRUCTIONS__" : [
                                   {
