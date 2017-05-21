@@ -2,6 +2,9 @@
 Artifact PonyExpress
 ====================
 
+.. image:: https://travis-ci.org/gpuoti/Artifact-PonyExpress.svg?branch=master
+    :target: https://travis-ci.org/gpuoti/Artifact-PonyExpress
+
 The pony helps you trade software or data modules!
 It is a general purpose package and dependency system that aims to be simple and fast. It is not constrained to any build system or language even if it was designed with native C++ development and Scons in mind.
 
