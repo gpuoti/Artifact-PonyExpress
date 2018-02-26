@@ -5,6 +5,8 @@ Artifact PonyExpress
 .. image:: https://travis-ci.org/gpuoti/Artifact-PonyExpress.svg?branch=master
     :target: https://travis-ci.org/gpuoti/Artifact-PonyExpress
 
+.. image:: https://www.codetriage.com/gpuoti/artifact-ponyexpress/badges/users.svg
+    :target: https://www.codetriage.com/gpuoti/artifact-ponyexpress
 The pony helps you trade software or data modules!
 It is a general purpose package and dependency system that aims to be simple and fast. It is not constrained to any build system or language even if it was designed with native C++ development and Scons in mind.
 
